@@ -10,10 +10,10 @@ import { projects } from '../data/site';
 		<SectionHeading
 			eyebrow="Proyectos"
 			title="Trabajo que puedes visitar"
-			description="Un proyecto en producción y demos que muestran lo que podemos construir para ti."
+			description="Proyectos en producción y demos que muestran lo que podemos construir para ti."
 		/>
 
-		<div class="grid gap-6 md:grid-cols-3">
+		<div class="grid gap-6 md:grid-cols-2">
 			{projects.map((project) => (
 				<a
 					href={project.url}
@@ -26,8 +26,8 @@ import { projects } from '../data/site';
 						<Image
 							src={project.image}
 							alt={`Captura del sitio de ${project.client}`}
-							widths={[400, 800]}
-							sizes="(min-width: 768px) 33vw, 100vw"
+							widths={[600, 1200]}
+							sizes="(min-width: 768px) 50vw, 100vw"
 							class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
 						/>
 						<span class="absolute top-4 left-4 rounded-full bg-void/80 px-3 py-1 text-xs font-semibold text-silver backdrop-blur">

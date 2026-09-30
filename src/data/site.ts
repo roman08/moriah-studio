@@ -1,5 +1,6 @@
 // Contenido de la landing. Edita aquí los textos y datos; los componentes solo los muestran.
 import cobius from '../assets/projects/cobius.png';
+import iseisa from '../assets/projects/iseisa.png';
 import nacar from '../assets/projects/nacar.png';
 import umbra from '../assets/projects/umbra.png';
 
@@ -66,6 +67,15 @@ export const projects = [
       'Sitio para una ONG de conservación ambiental en Tabasco, con secciones de proyectos, boletín, biblioteca digital y donaciones.',
     url: 'https://cobius.org/',
     image: cobius,
+  },
+  {
+    client: 'ISEISA Power',
+    type: 'Proyecto real',
+    category: 'Sitio web corporativo',
+    description:
+      'Sitio para una empresa de ingeniería eléctrica y mantenimiento mecánico en Tabasco, con presentación de la empresa, servicios y contacto.',
+    url: 'https://iseisa.mx/',
+    image: iseisa,
   },
   {
     client: 'Umbra',

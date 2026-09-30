@@ -1,0 +1,25 @@
+---
+import Facebook from 'lucide-astro/Facebook';
+import Linkedin from 'lucide-astro/Linkedin';
+import { nav, site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-white/5 py-12">
+	<div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:px-6 md:flex-row">
+		<p class="font-display font-bold"><span class="text-brand-gradient">Moriah</span> Studio</p>
+
+		<nav class="flex flex-wrap justify-center gap-6" aria-label="Pie de página">
+			{nav.map((item) => (
+				<a href={item.href} class="text-sm text-gray-soft hover:text-silver">{item.label}</a>
+			))}
+		</nav>
+
+		<div class="flex items-center gap-4 text-gray-soft">
+			<a href={site.social.facebook} target="_blank" rel="noopener" aria-label="Facebook" class="hover:text-silver"><Facebook size={20} /></a>
+			<a href={site.social.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn" class="hover:text-silver"><Linkedin size={20} /></a>
+		</div>
+	</div>
+	<p class="mt-8 text-center text-sm text-gray-soft">© {year} {site.name}. Todos los derechos reservados.</p>
+</footer>

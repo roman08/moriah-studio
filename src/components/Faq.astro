@@ -1,0 +1,23 @@
+---
+import ChevronDown from 'lucide-astro/ChevronDown';
+import SectionHeading from './SectionHeading.astro';
+import { faqs } from '../data/site';
+---
+
+<section id="faq" class="scroll-mt-20 py-24">
+	<div class="mx-auto max-w-3xl px-4 sm:px-6">
+		<SectionHeading eyebrow="Preguntas frecuentes" title="Resolvemos tus dudas" />
+
+		<div class="space-y-4" data-reveal>
+			{faqs.map((faq) => (
+				<details class="group rounded-2xl border border-white/5 bg-deep open:border-brand-purple-500/30">
+					<summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 font-semibold [&::-webkit-details-marker]:hidden">
+						{faq.question}
+						<ChevronDown size={20} class="shrink-0 text-gray-soft transition-transform group-open:rotate-180" />
+					</summary>
+					<p class="px-6 pb-6 text-gray-soft">{faq.answer}</p>
+				</details>
+			))}
+		</div>
+	</div>
+</section>

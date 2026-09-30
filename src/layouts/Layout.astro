@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = site.title, description = site.description } = Astro.props;
+// Sin dominio definido en site.url se omiten las etiquetas que requieren una URL absoluta.
+const canonical = site.url ? new URL(Astro.url.pathname, site.url).href : undefined;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{canonical && <link rel="canonical" href={canonical} />}
+		<meta name="theme-color" content="#05060F" />
+		<script is:inline>document.documentElement.classList.add('js');</script>
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+
+		<!-- Open Graph: cómo se ve el enlace al compartirlo -->
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_MX" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
+		/>
+	</head>
+	<body class="overflow-x-hidden">
+		<slot />
+
+		<script>
+			// Revela los elementos con [data-reveal] al entrar en pantalla.
+			const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			if (reduce || !('IntersectionObserver' in window)) {
+				items.forEach((el) => el.classList.add('is-visible'));
+			} else {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add('is-visible');
+								observer.unobserve(entry.target);
+							}
+						}
+					},
+					{ threshold: 0.15 },
+				);
+				items.forEach((el) => observer.observe(el));
+			}
+		</script>
+	</body>
+</html>

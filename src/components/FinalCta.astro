@@ -1,0 +1,39 @@
+---
+import Mail from 'lucide-astro/Mail';
+import MessageCircle from 'lucide-astro/MessageCircle';
+import { site, whatsappUrl } from '../data/site';
+---
+
+<section id="contacto" class="scroll-mt-20 py-24">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6">
+		<div data-reveal class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-elevated px-6 py-16 text-center sm:px-16">
+			<div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/2 h-72 w-[600px] -translate-x-1/2 rounded-full bg-brand-purple-600/30 blur-3xl"></div>
+
+			<div class="relative">
+				<h2 class="font-display text-3xl font-bold tracking-tight sm:text-5xl">
+					¿Listo para hacer <span class="text-brand-gradient">crecer tu negocio</span>?
+				</h2>
+				<p class="mx-auto mt-5 max-w-xl text-lg text-gray-soft">
+					Cuéntanos tu idea y te respondemos con una propuesta clara para hacerla realidad.
+				</p>
+
+				<div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+					<a
+						href={whatsappUrl}
+						target="_blank"
+						rel="noopener"
+						class="bg-brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-glow-purple transition-shadow hover:shadow-glow-mix"
+					>
+						<MessageCircle size={20} /> Escríbenos por WhatsApp
+					</a>
+					<a
+						href={`mailto:${site.email}`}
+						class="inline-flex items-center gap-2 rounded-full border border-white/10 px-7 py-3.5 font-semibold transition-colors hover:border-white/25 hover:bg-white/5"
+					>
+						<Mail size={20} /> Envíanos un correo
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

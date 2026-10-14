@@ -72,8 +72,6 @@ export const services = [
   },
 ] as const;
 
-type Testimonial = { quote: string; author: string; role: string };
-
 type Project = {
   client: string;
   // 'Proyecto real' va en el grupo de clientes; el resto en "Proyectos propios y demos".
@@ -84,9 +82,17 @@ type Project = {
   // Texto del enlace. Por defecto "Ver sitio".
   linkLabel?: string;
   image: ImageMetadata;
-  // Solo testimonios reales. Si no hay, se omite y la tarjeta no muestra nada.
-  testimonial?: Testimonial;
 };
+
+// Ancla de cada tarjeta de proyecto (p. ej. "proyecto-cobius"), usada por los testimonios.
+export const projectAnchor = (client: string) =>
+  'proyecto-' +
+  client
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '') // quita acentos
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 
 export const projects: Project[] = [
   {
@@ -97,12 +103,6 @@ export const projects: Project[] = [
       'Esta organización de conservación ambiental necesitaba difundir su trabajo y conseguir apoyo. Ahora publica sus boletines y actividades en un solo lugar y recibe donaciones desde su sitio.',
     url: 'https://cobius.org/',
     image: cobius,
-    testimonial: {
-      quote:
-        'Me gustó la practicidad con la que el Ing. Román hace las cosas, además de que acepta retroalimentación hasta quedar satisfecho del resultado.',
-      author: 'Gilberto Pozo',
-      role: 'COBIUS',
-    },
   },
   {
     client: 'ISEISA Power',
@@ -175,6 +175,18 @@ export const projects: Project[] = [
     description: 'Sitio para clínica con tratamientos, equipo médico y solicitud de citas.',
     url: 'https://clinica-nacar.netlify.app/',
     image: nacar,
+  },
+];
+
+// Solo testimonios reales. La sección se oculta si la lista está vacía; con 3 o más se vuelve carrusel.
+// `project` (opcional) es el `client` de un proyecto, para enlazar a su tarjeta.
+export const testimonials: { quote: string; author: string; role: string; project?: string }[] = [
+  {
+    quote:
+      'Me gustó la practicidad con la que el Ing. Román hace las cosas, además de que acepta retroalimentación hasta quedar satisfecho del resultado.',
+    author: 'Gilberto Pozo',
+    role: 'COBIUS',
+    project: 'COBIUS',
   },
 ];
 

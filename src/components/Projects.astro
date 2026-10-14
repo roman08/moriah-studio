@@ -4,7 +4,7 @@ import ArrowRight from 'lucide-astro/ArrowRight';
 import ExternalLink from 'lucide-astro/ExternalLink';
 import MessageCircle from 'lucide-astro/MessageCircle';
 import SectionHeading from './SectionHeading.astro';
-import { projects } from '../data/site';
+import { projectAnchor, projects } from '../data/site';
 
 const groups = [
 	{
@@ -41,11 +41,12 @@ const groups = [
 							const LinkIcon = isWhatsapp ? MessageCircle : isExternal ? ExternalLink : ArrowRight;
 							return (
 								<a
+									id={projectAnchor(project.client)}
 									href={project.url}
 									target={isExternal ? '_blank' : undefined}
 									rel={isExternal ? 'noopener' : undefined}
 									data-reveal
-									class="group flex flex-col overflow-hidden rounded-3xl border border-white/5 bg-deep transition-colors hover:border-brand-purple-500/40"
+									class="group flex scroll-mt-24 flex-col overflow-hidden rounded-3xl border border-white/5 bg-deep transition-colors hover:border-brand-purple-500/40"
 								>
 									<div class="relative aspect-[4/3] overflow-hidden">
 										<Image
@@ -63,14 +64,6 @@ const groups = [
 										<p class="text-sm text-brand-blue-400">{project.category}</p>
 										<h4 class="mt-2 font-display text-lg font-semibold">{project.client}</h4>
 										<p class:list={['mt-2 flex-1 text-gray-soft', group.compact && 'text-sm']}>{project.description}</p>
-										{project.testimonial && (
-											<figure class="mt-5 rounded-2xl border-l-2 border-brand-purple-500 bg-elevated p-4">
-												<blockquote class="text-silver">“{project.testimonial.quote}”</blockquote>
-												<figcaption class="mt-2 text-sm text-gray-soft">
-													<span class="font-semibold text-silver">{project.testimonial.author}</span>, {project.testimonial.role}
-												</figcaption>
-											</figure>
-										)}
 										<span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-silver group-hover:text-brand-purple-400">
 											{project.linkLabel ?? 'Ver sitio'} <LinkIcon size={16} />
 										</span>

@@ -1,0 +1,132 @@
+---
+import ArrowRight from 'lucide-astro/ArrowRight';
+import ChevronLeft from 'lucide-astro/ChevronLeft';
+import ChevronRight from 'lucide-astro/ChevronRight';
+import Quote from 'lucide-astro/Quote';
+import SectionHeading from './SectionHeading.astro';
+import { projectAnchor, projects, testimonials } from '../data/site';
+
+// Con pocos testimonios, tarjetas fijas; desde 3, fila deslizable (sin avance automático).
+const isCarousel = testimonials.length >= 3;
+const projectNames = new Set(projects.map((p) => p.client));
+---
+
+{testimonials.length > 0 && (
+	<section id="testimonios" class="scroll-mt-20 py-24">
+		<div class="mx-auto max-w-6xl px-4 sm:px-6">
+			<SectionHeading eyebrow="Testimonios" title="Lo que dicen los clientes" />
+
+			<div data-carousel={isCarousel ? '' : undefined}>
+				{isCarousel && (
+					<div class="mb-6 hidden justify-end gap-2 md:flex">
+						<button type="button" class="carousel-btn" data-prev aria-label="Testimonio anterior"><ChevronLeft size={20} /></button>
+						<button type="button" class="carousel-btn" data-next aria-label="Siguiente testimonio"><ChevronRight size={20} /></button>
+					</div>
+				)}
+
+				<ul
+					class:list={[
+						'gap-6',
+						isCarousel
+							? 'track -mx-4 flex snap-x snap-mandatory overflow-x-auto scroll-px-4 px-4 pb-4 sm:-mx-6 sm:scroll-px-6 sm:px-6'
+							: 'flex flex-wrap justify-center',
+					]}
+					data-track
+				>
+					{testimonials.map((t) => (
+						<li
+							data-reveal
+							class:list={[
+								isCarousel ? 'w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]' : 'w-full max-w-md',
+							]}
+						>
+							<figure class="flex h-full flex-col rounded-3xl border border-white/5 bg-deep p-7">
+								<span class="bg-brand-gradient mb-5 inline-flex h-10 w-10 items-center justify-center rounded-xl text-white">
+									<Quote size={18} />
+								</span>
+								<blockquote class="flex-1 text-lg leading-relaxed text-silver">“{t.quote}”</blockquote>
+								<figcaption class="mt-6 flex flex-wrap items-center gap-3 border-t border-white/5 pt-5">
+									<span class="bg-brand-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display font-bold text-white">
+										{t.author.charAt(0)}
+									</span>
+									<span class="min-w-[9rem] flex-1">
+										<span class="block font-semibold">{t.author}</span>
+										<span class="block text-sm text-gray-soft">{t.role}</span>
+									</span>
+									{t.project && projectNames.has(t.project) && (
+										<a
+											href={`#${projectAnchor(t.project)}`}
+											class="ml-auto inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-brand-blue-400 hover:text-brand-purple-400"
+										>
+											Ver proyecto <ArrowRight size={14} />
+										</a>
+									)}
+								</figcaption>
+							</figure>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	</section>
+)}
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((carousel) => {
+		const track = carousel.querySelector<HTMLElement>('[data-track]');
+		const prev = carousel.querySelector<HTMLButtonElement>('[data-prev]');
+		const next = carousel.querySelector<HTMLButtonElement>('[data-next]');
+		if (!track || !prev || !next) return;
+
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const update = () => {
+			prev.disabled = track.scrollLeft <= 4;
+			next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+		};
+		const move = (direction: number) => {
+			const card = track.querySelector('li');
+			const step = card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
+			track.scrollBy({ left: direction * step, behavior: reduce ? 'auto' : 'smooth' });
+		};
+
+		prev.addEventListener('click', () => move(-1));
+		next.addEventListener('click', () => move(1));
+		track.addEventListener('scroll', update, { passive: true });
+		window.addEventListener('resize', update);
+		update();
+	});
+</script>
+
+<style>
+	.track {
+		scrollbar-width: none;
+	}
+
+	.track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.carousel-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border: 1px solid rgb(255 255 255 / 0.1);
+		border-radius: 9999px;
+		color: var(--color-silver);
+		cursor: pointer;
+		transition:
+			background-color 0.2s ease,
+			opacity 0.2s ease;
+	}
+
+	.carousel-btn:hover:not(:disabled) {
+		background: rgb(255 255 255 / 0.06);
+	}
+
+	.carousel-btn:disabled {
+		opacity: 0.3;
+		cursor: default;
+	}
+</style>

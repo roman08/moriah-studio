@@ -63,23 +63,9 @@ body {
   transform: none;
 }
 
-/* === Orbe pseudo-3D del hero === */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-18px); }
-}
-
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
-}
-
-.animate-float     { animation: float 7s ease-in-out infinite; }
-.animate-spin-slow { animation: spin-slow 30s linear infinite; }
-
+/* La escena animada del hero tiene sus propios estilos en Hero.astro */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .animate-float,
-  .animate-spin-slow { animation: none; }
   .js [data-reveal] { opacity: 1; transform: none; transition: none; }
 }
 

@@ -1,8 +1,18 @@
 ---
 import ArrowRight from 'lucide-astro/ArrowRight';
+import Bot from 'lucide-astro/Bot';
+import CalendarCheck from 'lucide-astro/CalendarCheck';
 import Check from 'lucide-astro/Check';
+import MessageCircle from 'lucide-astro/MessageCircle';
 import Sparkles from 'lucide-astro/Sparkles';
 import { highlights, whatsappUrl } from '../data/site';
+
+// Anillos del orbe. Cada uno se dibuja dos veces: la mitad trasera detrás del orbe y la delantera encima.
+// --k = alto/ancho de la elipse (inclinación); --R = radio horizontal en cqw (debe cuadrar con inset).
+const rings = [
+	{ style: '--rz: -16deg; --k: 0.26; --R: 48cqw; --dur: 14s; --moon: 0.875rem; inset: 2%', line: 'border-brand-blue-400/40', moon: 'bg-brand-blue-400 shadow-glow-blue' },
+	{ style: '--rz: 24deg; --k: 0.34; --R: 41cqw; --dur: 20s; --moon: 0.625rem; inset: 9%', line: 'border-dashed border-brand-purple-400/40', moon: 'bg-brand-purple-400 shadow-glow-purple' },
+];
 ---
 
 <section id="inicio" class="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
@@ -19,11 +29,11 @@ import { highlights, whatsappUrl } from '../data/site';
 			</p>
 
 			<h1 class="font-display text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
-				Tecnología que hace <span class="text-brand-gradient">crecer tu negocio</span>
+				Recibe más clientes por WhatsApp <span class="text-brand-gradient">sin contestar todo tú</span>
 			</h1>
 
 			<p class="mt-6 max-w-xl text-lg text-gray-soft">
-				Creamos sitios web que atraen clientes, automatizamos las tareas que te quitan tiempo y desarrollamos el sistema que tu negocio necesita.
+				Creamos el sitio web que te hace visible, automatizamos las respuestas, cotizaciones y recordatorios que te quitan tiempo, y desarrollamos el sistema que tu negocio necesita.
 			</p>
 
 			<div class="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -53,20 +63,404 @@ import { highlights, whatsappUrl } from '../data/site';
 			</ul>
 		</div>
 
-		<!-- Orbe pseudo-3D: solo CSS, sin JavaScript -->
-		<div aria-hidden="true" class="relative mx-auto aspect-square w-full max-w-sm lg:max-w-md">
-			<div class="animate-spin-slow absolute inset-0 rounded-full border border-dashed border-brand-blue-400/20"></div>
-			<div class="animate-spin-slow absolute inset-8 rounded-full border border-brand-purple-400/20 [animation-direction:reverse]"></div>
-			<div class="animate-float absolute inset-16">
-				<div
-					class="h-full w-full rounded-full shadow-glow-mix"
-					style="background: radial-gradient(circle at 30% 25%, #E0F2FE 0%, #38BDF8 18%, #3B82F6 40%, #7C3AED 72%, #2E1065 100%);"
-				></div>
-				<div class="absolute inset-0 rounded-full" style="background: radial-gradient(circle at 70% 80%, transparent 40%, rgba(5,6,15,0.55) 100%);"></div>
-				<div class="absolute top-[12%] left-[20%] h-[18%] w-[28%] rotate-[-25deg] rounded-full bg-white/50 blur-xl"></div>
+		<!--
+			Escena pseudo-3D: orbe con anillos que lo rodean (mitad trasera y delantera) y burbujas que cuentan la historia
+			"llega un mensaje → respuesta automática → cita agendada". El único JS es el parallax con el mouse.
+		-->
+		<div aria-hidden="true" class="hero-scene relative mx-auto aspect-square w-full max-w-[21rem] sm:max-w-md lg:max-w-lg" data-hero-scene>
+			<!-- Capa 1: estrellas de fondo -->
+			<div class="layer" style="--depth: 8">
+				<span class="star top-[8%] left-[30%]" style="--d: 0s"></span>
+				<span class="star top-[20%] right-[12%]" style="--d: 1.2s"></span>
+				<span class="star bottom-[18%] right-[30%]" style="--d: 2.1s"></span>
+				<span class="star bottom-[30%] left-[6%]" style="--d: 0.6s"></span>
+				<span class="star top-[48%] left-[2%]" style="--d: 1.7s"></span>
 			</div>
-			<div class="absolute right-[6%] bottom-[14%] h-6 w-6 rounded-full bg-brand-blue-400 shadow-glow-blue"></div>
-			<div class="absolute top-[10%] left-[8%] h-3 w-3 rounded-full bg-brand-purple-400 shadow-glow-purple"></div>
+
+			<!-- Capa 2: orbe y anillos -->
+			<div class="layer stage" style="--depth: 18">
+				<div class="orb-glow absolute inset-[18%] rounded-full"></div>
+
+				{rings.map((ring) => (
+					<div class="orbit-ring" style={ring.style}>
+						<div class:list={['ring-line', ring.line]}></div>
+						<span class="moon-track"><span class="moon-x"><span class="moon-y"><span class:list={['moon moon-back', ring.moon]}></span></span></span></span>
+					</div>
+				))}
+
+				<div class="orb-float absolute inset-[25%]">
+					<div class="orb relative h-full w-full overflow-hidden rounded-full">
+						<div class="orb-swirl absolute -inset-1/2"></div>
+						<div class="absolute inset-0 rounded-full" style="background: radial-gradient(circle at 70% 80%, transparent 35%, rgba(5,6,15,0.6) 100%);"></div>
+						<div class="absolute top-[10%] left-[18%] h-[20%] w-[30%] rotate-[-25deg] rounded-full bg-white/55 blur-xl"></div>
+					</div>
+				</div>
+
+				{rings.map((ring) => (
+					<div class="orbit-ring" style={ring.style}>
+						<div class:list={['ring-line ring-line-front', ring.line]}></div>
+						<span class="moon-track"><span class="moon-x"><span class="moon-y"><span class:list={['moon moon-front', ring.moon]}></span></span></span></span>
+					</div>
+				))}
+			</div>
+
+			<!-- Capa 3: burbujas de la historia -->
+			<div class="layer" style="--depth: 34">
+				<div class="chip-wrap top-[4%] left-0" style="--delay: 0s">
+					<div class="chip" style="--float-delay: 0s">
+						<span class="chip-icon bg-[#25D366]"><MessageCircle size={16} /></span>
+						<span>
+							<span class="chip-title">Nuevo mensaje</span>
+							<span class="chip-text">“Hola, ¿me cotizan un sitio?”</span>
+						</span>
+					</div>
+				</div>
+				<div class="chip-wrap top-[44%] right-0 sm:-right-[6%]" style="--delay: 1.4s">
+					<div class="chip" style="--float-delay: -2s">
+						<span class="chip-icon bg-brand-gradient"><Bot size={16} /></span>
+						<span>
+							<span class="chip-title">Respuesta automática</span>
+							<span class="chip-text">Enviada al instante</span>
+						</span>
+					</div>
+				</div>
+				<div class="chip-wrap bottom-[4%] left-[4%]" style="--delay: 2.8s">
+					<div class="chip" style="--float-delay: -4s">
+						<span class="chip-icon bg-brand-purple-600"><CalendarCheck size={16} /></span>
+						<span>
+							<span class="chip-title">Cita agendada</span>
+							<span class="chip-text">Mañana · 10:00 a. m.</span>
+						</span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+	// Parallax: las capas se desplazan según su profundidad (--depth) siguiendo al mouse.
+	const scene = document.querySelector<HTMLElement>('[data-hero-scene]');
+	const finePointer = window.matchMedia('(pointer: fine)').matches;
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (scene && finePointer && !reduceMotion) {
+		let frame = 0;
+		window.addEventListener(
+			'pointermove',
+			(event) => {
+				if (frame) return;
+				frame = requestAnimationFrame(() => {
+					frame = 0;
+					scene.style.setProperty('--mx', (event.clientX / window.innerWidth - 0.5).toFixed(3));
+					scene.style.setProperty('--my', (event.clientY / window.innerHeight - 0.5).toFixed(3));
+				});
+			},
+			{ passive: true },
+		);
+	}
+</script>
+
+<style>
+	.hero-scene {
+		--mx: 0;
+		--my: 0;
+		perspective: 1000px;
+	}
+
+	.layer {
+		position: absolute;
+		inset: 0;
+		transform: translate3d(calc(var(--mx) * var(--depth) * 1px), calc(var(--my) * var(--depth) * 1px), 0);
+		transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	/* El escenario se inclina un poco con el mouse. Sin preserve-3d a propósito: los planos 3D que se cruzan
+	   generan líneas fantasma en Chrome. La profundidad se simula con capas (anillo trasero / orbe / delantero). */
+	.stage {
+		container-type: inline-size;
+		transform: translate3d(calc(var(--mx) * var(--depth) * 1px), calc(var(--my) * var(--depth) * 1px), 0)
+			rotateY(calc(var(--mx) * 10deg)) rotateX(calc(var(--my) * -10deg));
+	}
+
+	/* === Orbe === */
+	.orb-glow {
+		background: radial-gradient(circle, rgba(56, 189, 248, 0.55), rgba(124, 58, 237, 0.45) 55%, transparent 72%);
+		filter: blur(40px);
+		animation: glow-pulse 6s ease-in-out infinite;
+	}
+
+	.orb-float {
+		animation: float 7s ease-in-out infinite;
+	}
+
+	.orb {
+		background: radial-gradient(circle at 30% 25%, #e0f2fe 0%, #38bdf8 18%, #3b82f6 40%, #7c3aed 72%, #2e1065 100%);
+		box-shadow:
+			var(--shadow-glow-mix),
+			inset -18px -24px 40px rgba(5, 6, 15, 0.35);
+	}
+
+	.orb-swirl {
+		background: conic-gradient(
+			from 0deg,
+			transparent 0 12%,
+			rgba(56, 189, 248, 0.7) 24%,
+			transparent 38% 58%,
+			rgba(167, 139, 250, 0.75) 72%,
+			transparent 86%
+		);
+		mix-blend-mode: screen;
+		opacity: 0.45;
+		animation: spin 14s linear infinite;
+	}
+
+	/* === Anillos: elipses planas rotadas; la mitad delantera se recorta y va encima del orbe === */
+	.orbit-ring {
+		position: absolute;
+		transform: rotate(var(--rz));
+	}
+
+	.ring-line {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(50% - var(--k) * 50%);
+		height: calc(var(--k) * 100%);
+		border-width: 1.5px;
+		border-radius: 50%;
+	}
+
+	.ring-line-front {
+		clip-path: inset(50% 0 0 0);
+	}
+
+	/* Luna: X e Y oscilan desfasadas un cuarto de vuelta, lo que traza la elipse.
+	   Va por delante en la primera mitad de la vuelta y por detrás en la segunda. */
+	.moon-track {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+	}
+
+	.moon-x,
+	.moon-y {
+		position: absolute;
+		animation-duration: calc(var(--dur) / 2);
+		animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
+		animation-iteration-count: infinite;
+		animation-direction: alternate;
+	}
+
+	.moon-x {
+		animation-name: moon-x;
+	}
+
+	.moon-y {
+		animation-name: moon-y;
+		animation-delay: calc(var(--dur) / -4);
+	}
+
+	.moon {
+		position: absolute;
+		width: var(--moon);
+		height: var(--moon);
+		margin: calc(var(--moon) / -2) 0 0 calc(var(--moon) / -2);
+		border-radius: 9999px;
+		animation-duration: var(--dur);
+		animation-timing-function: step-end;
+		animation-iteration-count: infinite;
+	}
+
+	.moon-front {
+		animation-name: moon-front;
+	}
+
+	.moon-back {
+		animation-name: moon-back;
+	}
+
+	/* === Estrellas === */
+	.star {
+		position: absolute;
+		width: 3px;
+		height: 3px;
+		border-radius: 9999px;
+		background: white;
+		opacity: 0.15;
+		animation: twinkle 3.5s ease-in-out infinite;
+		animation-delay: var(--d);
+	}
+
+	/* === Burbujas === */
+	.chip-wrap {
+		position: absolute;
+		opacity: 0;
+		animation: chip-story 9s ease-in-out infinite;
+		animation-delay: var(--delay);
+	}
+
+	.chip {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.5rem 0.875rem 0.5rem 0.5rem;
+		border: 1px solid rgb(255 255 255 / 0.1);
+		border-radius: 1rem;
+		background: rgb(18 24 41 / 0.72);
+		backdrop-filter: blur(12px);
+		box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.7);
+		white-space: nowrap;
+		animation: float 6s ease-in-out infinite;
+		animation-delay: var(--float-delay);
+	}
+
+	.chip-icon {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 9999px;
+		color: white;
+	}
+
+	.chip-title {
+		display: block;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--color-silver);
+	}
+
+	.chip-text {
+		display: block;
+		font-size: 0.6875rem;
+		color: var(--color-gray-soft);
+	}
+
+	@media (min-width: 640px) {
+		.chip-title {
+			font-size: 0.8125rem;
+		}
+		.chip-text {
+			font-size: 0.75rem;
+		}
+	}
+
+	/* === Animaciones === */
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes moon-x {
+		from {
+			transform: translateX(calc(var(--R) * -1));
+		}
+		to {
+			transform: translateX(var(--R));
+		}
+	}
+
+	@keyframes moon-y {
+		from {
+			transform: translateY(calc(var(--R) * var(--k) * -1));
+		}
+		to {
+			transform: translateY(calc(var(--R) * var(--k)));
+		}
+	}
+
+	@keyframes moon-front {
+		0% {
+			opacity: 1;
+		}
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes moon-back {
+		0% {
+			opacity: 0;
+		}
+		50%,
+		100% {
+			opacity: 0.6;
+		}
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-14px);
+		}
+	}
+
+	@keyframes glow-pulse {
+		0%,
+		100% {
+			opacity: 0.7;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1.12);
+		}
+	}
+
+	@keyframes twinkle {
+		0%,
+		100% {
+			opacity: 0.15;
+		}
+		50% {
+			opacity: 0.9;
+		}
+	}
+
+	/* Cada burbuja entra, se queda y sale; con el retraso escalonado forman la secuencia. */
+	@keyframes chip-story {
+		0% {
+			opacity: 0;
+			transform: translateY(14px) scale(0.92);
+		}
+		8%,
+		80% {
+			opacity: 1;
+			transform: none;
+		}
+		90%,
+		100% {
+			opacity: 0;
+			transform: translateY(-10px) scale(0.96);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.layer,
+		.stage {
+			transition: none;
+		}
+		.orb-glow,
+		.orb-float,
+		.orb-swirl,
+		.star,
+		.chip,
+		.chip-wrap {
+			animation: none;
+		}
+		.chip-wrap {
+			opacity: 1;
+		}
+		.moon-track {
+			display: none;
+		}
+	}
+</style>

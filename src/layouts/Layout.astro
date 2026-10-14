@@ -8,8 +8,10 @@ interface Props {
 }
 
 const { title = site.title, description = site.description } = Astro.props;
-// Sin dominio definido en site.url se omiten las etiquetas que requieren una URL absoluta.
-const canonical = site.url ? new URL(Astro.url.pathname, site.url).href : undefined;
+// La URL base viene de `site` en astro.config.mjs.
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// Imagen para compartir (public/og-image.jpg). Las redes exigen URL absoluta.
+const ogImage = Astro.site ? new URL('/og-image.jpg', Astro.site).href : undefined;
 ---
 
 <!doctype html>
@@ -24,8 +26,9 @@ const canonical = site.url ? new URL(Astro.url.pathname, site.url).href : undefi
 		<meta name="theme-color" content="#05060F" />
 		<script is:inline>document.documentElement.classList.add('js');</script>
 
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 		<!-- Open Graph: cómo se ve el enlace al compartirlo -->
 		<meta property="og:type" content="website" />
@@ -34,6 +37,15 @@ const canonical = site.url ? new URL(Astro.url.pathname, site.url).href : undefi
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		{canonical && <meta property="og:url" content={canonical} />}
+		{ogImage && (
+			<>
+				<meta property="og:image" content={ogImage} />
+				<meta property="og:image:width" content="1200" />
+				<meta property="og:image:height" content="630" />
+				<meta property="og:image:alt" content={`${site.name}: diseño web, automatización y software a la medida`} />
+				<meta name="twitter:image" content={ogImage} />
+			</>
+		)}
 		<meta name="twitter:card" content="summary_large_image" />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />

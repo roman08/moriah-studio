@@ -21,5 +21,9 @@ const year = new Date().getFullYear();
 			<a href={site.social.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn" class="hover:text-silver"><Linkedin size={20} /></a>
 		</div>
 	</div>
-	<p class="mt-8 text-center text-sm text-gray-soft">© {year} {site.name}. Todos los derechos reservados.</p>
+	<p class="mt-8 text-center text-sm text-gray-soft">
+		© {year} {site.name}. Todos los derechos reservados.
+		<span aria-hidden="true">·</span>
+		<a href="/aviso-de-privacidad" class="underline-offset-2 hover:text-silver hover:underline">Aviso de Privacidad</a>
+	</p>
 </footer>

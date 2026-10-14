@@ -1,7 +1,7 @@
 ---
 import ChevronDown from 'lucide-astro/ChevronDown';
 import SectionHeading from './SectionHeading.astro';
-import { faqs } from '../data/site';
+import { faqs, pricesNote, startingPrices } from '../data/site';
 ---
 
 <section id="faq" class="scroll-mt-20 py-24">
@@ -16,6 +16,22 @@ import { faqs } from '../data/site';
 						<ChevronDown size={20} class="shrink-0 text-gray-soft transition-transform group-open:rotate-180" />
 					</summary>
 					<p class="px-6 pb-6 text-gray-soft">{faq.answer}</p>
+					{faq.showPrices && startingPrices.length > 0 && (
+						<div class="mx-6 mb-6">
+							<ul class="divide-y divide-white/5 rounded-xl border border-white/5 bg-elevated">
+								{startingPrices.map((price) => (
+									<li class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+										<span>
+											<span class="block text-silver">{price.service}</span>
+											<span class="block text-sm text-gray-soft">{price.detail}</span>
+										</span>
+										<span class="shrink-0 font-semibold sm:text-right">{price.price}</span>
+									</li>
+								))}
+							</ul>
+							<p class="mt-3 text-sm text-gray-soft">{pricesNote}</p>
+						</div>
+					)}
 				</details>
 			))}
 		</div>

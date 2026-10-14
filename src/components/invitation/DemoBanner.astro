@@ -1,0 +1,31 @@
+---
+import ArrowLeft from 'lucide-astro/ArrowLeft';
+import { whatsappLink } from '../../data/site';
+
+interface Props {
+	// Tipo de evento para el mensaje de WhatsApp, p. ej. "boda"
+	label: string;
+}
+
+const { label } = Astro.props;
+const cta = whatsappLink(`Hola Moriah Studio, vi la demo de invitación de ${label} y quiero una para mi evento.`);
+---
+
+<!-- Barra fija que deja claro que es una demo y lleva a cotizar -->
+<div class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#05060F]/90 font-[Inter,sans-serif] backdrop-blur">
+	<div class="mx-auto flex h-12 max-w-5xl items-center justify-between gap-3 px-4 text-sm">
+		<a href="/#proyectos" class="inline-flex items-center gap-1.5 text-[#94A3B8] hover:text-white">
+			<ArrowLeft size={16} />
+			<span class="hidden sm:inline">Moriah Studio</span>
+		</a>
+		<p class="truncate text-[#94A3B8]"><span class="font-semibold text-white">Invitación de demostración</span><span class="hidden sm:inline"> · datos ficticios</span></p>
+		<a
+			href={cta}
+			target="_blank"
+			rel="noopener"
+			class="shrink-0 rounded-full bg-[#25D366] px-3.5 py-1.5 font-semibold text-[#05060F] transition-transform hover:scale-105"
+		>
+			Quiero una así
+		</a>
+	</div>
+</div>

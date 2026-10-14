@@ -5,9 +5,12 @@ import { site } from '../data/site';
 interface Props {
 	title?: string;
 	description?: string;
+	// Páginas de demostración: fuera de buscadores (también se excluyen del sitemap en astro.config.mjs).
+	noindex?: boolean;
+	themeColor?: string;
 }
 
-const { title = site.title, description = site.description } = Astro.props;
+const { title = site.title, description = site.description, noindex = false, themeColor = '#05060F' } = Astro.props;
 // La URL base viene de `site` en astro.config.mjs.
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 // Imagen para compartir (public/og-image.jpg). Las redes exigen URL absoluta.
@@ -23,7 +26,8 @@ const ogImage = Astro.site ? new URL('/og-image.jpg', Astro.site).href : undefin
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		{canonical && <link rel="canonical" href={canonical} />}
-		<meta name="theme-color" content="#05060F" />
+		<meta name="theme-color" content={themeColor} />
+		{noindex && <meta name="robots" content="noindex" />}
 		<script is:inline>document.documentElement.classList.add('js');</script>
 
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -54,6 +58,8 @@ const ogImage = Astro.site ? new URL('/og-image.jpg', Astro.site).href : undefin
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap"
 		/>
+		<!-- Recursos extra por página (p. ej. fuentes de las invitaciones demo) -->
+		<slot name="head" />
 	</head>
 	<body class="overflow-x-hidden">
 		<slot />

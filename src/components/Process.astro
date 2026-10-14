@@ -1,6 +1,12 @@
 ---
+import Code from 'lucide-astro/Code';
+import FileText from 'lucide-astro/FileText';
+import Rocket from 'lucide-astro/Rocket';
+import Search from 'lucide-astro/Search';
 import SectionHeading from './SectionHeading.astro';
 import { steps } from '../data/site';
+
+const icons = [Search, FileText, Code, Rocket];
 ---
 
 <section id="proceso" class="scroll-mt-20 py-24">
@@ -11,14 +17,269 @@ import { steps } from '../data/site';
 			description="Un proceso claro, con fechas y entregables definidos desde el inicio."
 		/>
 
-		<ol class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-			{steps.map((step, i) => (
-				<li data-reveal class="relative rounded-3xl border border-white/5 bg-deep p-7">
-					<span class="text-brand-gradient font-display text-5xl font-bold">0{i + 1}</span>
-					<h3 class="mt-4 font-display text-xl font-semibold">{step.title}</h3>
-					<p class="mt-3 text-gray-soft">{step.description}</p>
-				</li>
-			))}
+		<!--
+			Flujo animado: al entrar en pantalla, cada conector se llena después del anterior y una luz viaja
+			de un paso al siguiente. Horizontal desde lg, vertical en pantallas chicas.
+		-->
+		<ol class="flow" data-flow>
+			{steps.map((step, i) => {
+				const Icon = icons[i] ?? Rocket;
+				return (
+					<li class="flow-step" style={`--i: ${i}`}>
+						{i < steps.length - 1 && (
+							<span class="flow-connector" aria-hidden="true">
+								<span class="flow-fill"></span>
+								<span class="flow-spark"></span>
+							</span>
+						)}
+						<span class="flow-node">
+							<span class="flow-node-glow" aria-hidden="true"></span>
+							<Icon size={22} class="relative" />
+						</span>
+						<div class="flow-text">
+							<p class="text-xs font-semibold tracking-widest text-brand-blue-400 uppercase">Paso {i + 1}</p>
+							<h3 class="mt-1 font-display text-xl font-semibold">{step.title}</h3>
+							<p class="mt-2 text-gray-soft">{step.description}</p>
+						</div>
+					</li>
+				);
+			})}
 		</ol>
 	</div>
 </section>
+
+<script>
+	const flow = document.querySelector<HTMLElement>('[data-flow]');
+	if (flow) {
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (reduce || !('IntersectionObserver' in window)) {
+			flow.classList.add('is-playing');
+		} else {
+			const observer = new IntersectionObserver(
+				([entry]) => {
+					if (entry.isIntersecting) {
+						flow.classList.add('is-playing');
+						observer.disconnect();
+					}
+				},
+				{ threshold: 0.35 },
+			);
+			observer.observe(flow);
+		}
+	}
+</script>
+
+<style>
+	.flow {
+		--node: 3.5rem;
+		--gap: 2.5rem;
+		--step-time: 0.9s;
+		display: grid;
+		gap: var(--gap);
+	}
+
+	.flow-step {
+		position: relative;
+		display: flex;
+		gap: 1.25rem;
+	}
+
+	/* === Nodo (círculo con ícono) === */
+	.flow-node {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		width: var(--node);
+		height: var(--node);
+		border: 1px solid rgb(255 255 255 / 0.1);
+		border-radius: 9999px;
+		background: var(--color-deep);
+		color: var(--color-gray-soft);
+		transition:
+			color 0.4s ease,
+			border-color 0.4s ease,
+			transform 0.4s ease;
+		transition-delay: calc(var(--i) * var(--step-time));
+	}
+
+	.flow-node-glow {
+		position: absolute;
+		inset: -1px;
+		border-radius: inherit;
+		background-image: linear-gradient(135deg, #38bdf8 0%, #3b82f6 40%, #7c3aed 100%);
+		box-shadow: var(--shadow-glow-purple);
+		opacity: 0;
+		transition: opacity 0.4s ease;
+		transition-delay: inherit;
+	}
+
+	.is-playing .flow-node {
+		color: white;
+		border-color: transparent;
+		transform: scale(1.06);
+	}
+
+	.is-playing .flow-node-glow {
+		opacity: 1;
+	}
+
+	.flow-text {
+		opacity: 0.45;
+		transition: opacity 0.5s ease;
+		transition-delay: calc(var(--i) * var(--step-time));
+	}
+
+	.is-playing .flow-text {
+		opacity: 1;
+	}
+
+	/* === Conector: vertical por defecto === */
+	.flow-connector {
+		position: absolute;
+		top: calc(var(--node) + 0.5rem);
+		bottom: calc(var(--gap) * -1 + 0.5rem);
+		left: calc(var(--node) / 2 - 1px);
+		width: 2px;
+		overflow: hidden;
+		border-radius: 9999px;
+		background: rgb(255 255 255 / 0.08);
+	}
+
+	.flow-fill {
+		position: absolute;
+		inset: 0;
+		background-image: linear-gradient(180deg, #38bdf8, #8b5cf6, #38bdf8);
+		background-size: 100% 200%;
+		transform: scaleY(0);
+		transform-origin: top;
+		transition: transform var(--step-time) ease-in-out;
+		transition-delay: calc(var(--i) * var(--step-time) + 0.2s);
+	}
+
+	.is-playing .flow-fill {
+		transform: none;
+		/* Al terminar, el gradiente sigue fluyendo por la línea */
+		animation: flow-shimmer-y 2.5s linear infinite;
+		animation-delay: calc(4 * var(--step-time));
+	}
+
+	.flow-spark {
+		position: absolute;
+		left: 50%;
+		top: 0;
+		width: 10px;
+		height: 10px;
+		margin: -5px 0 0 -5px;
+		border-radius: 9999px;
+		background: white;
+		box-shadow:
+			0 0 12px 3px rgb(56 189 248 / 0.9),
+			0 0 24px 6px rgb(139 92 246 / 0.6);
+		opacity: 0;
+	}
+
+	.is-playing .flow-spark {
+		animation: spark-y var(--step-time) ease-in-out both;
+		animation-delay: calc(var(--i) * var(--step-time) + 0.2s);
+	}
+
+	/* === Horizontal desde lg === */
+	@media (min-width: 1024px) {
+		.flow {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 1.5rem;
+		}
+
+		.flow-step {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		.flow-connector {
+			top: calc(var(--node) / 2 - 1px);
+			bottom: auto;
+			left: calc(50% + var(--node) / 2 + 0.75rem);
+			width: calc(100% + 1.5rem - var(--node) - 1.5rem);
+			height: 2px;
+		}
+
+		.flow-fill {
+			background-image: linear-gradient(90deg, #38bdf8, #8b5cf6, #38bdf8);
+			background-size: 200% 100%;
+			transform: scaleX(0);
+			transform-origin: left;
+		}
+
+		.is-playing .flow-fill {
+			animation-name: flow-shimmer-x;
+		}
+
+		.flow-spark {
+			top: 50%;
+			left: 0;
+		}
+
+		.is-playing .flow-spark {
+			animation-name: spark-x;
+		}
+	}
+
+	@keyframes spark-y {
+		0% {
+			top: 0;
+			opacity: 0;
+		}
+		15%,
+		85% {
+			opacity: 1;
+		}
+		100% {
+			top: 100%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes spark-x {
+		0% {
+			left: 0;
+			opacity: 0;
+		}
+		15%,
+		85% {
+			opacity: 1;
+		}
+		100% {
+			left: 100%;
+			opacity: 0;
+		}
+	}
+
+	@keyframes flow-shimmer-y {
+		to {
+			background-position: 0 -200%;
+		}
+	}
+
+	@keyframes flow-shimmer-x {
+		to {
+			background-position: -200% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.flow-node,
+		.flow-node-glow,
+		.flow-text,
+		.flow-fill {
+			transition: none;
+		}
+		.is-playing .flow-fill,
+		.is-playing .flow-spark {
+			animation: none;
+		}
+	}
+</style>

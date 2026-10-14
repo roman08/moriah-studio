@@ -1,0 +1,169 @@
+---
+import MessageCircle from 'lucide-astro/MessageCircle';
+import { whatsappLink } from '../../data/site';
+
+interface Props {
+	// Cómo se nombra el evento en el mensaje, p. ej. "la boda de Ana y Luis"
+	eventName: string;
+	deadline: string;
+	label: string;
+}
+
+const { eventName, deadline, label } = Astro.props;
+const cta = whatsappLink(`Hola Moriah Studio, vi la demo de invitación de ${label} y quiero una para mi evento.`);
+---
+
+<div class="rsvp">
+	<form data-rsvp={eventName} class="space-y-5">
+		<label class="field">
+			<span>Tu nombre</span>
+			<input name="name" required autocomplete="name" placeholder="Ej. María López" />
+		</label>
+
+		<fieldset class="field">
+			<legend>¿Nos acompañas?</legend>
+			<div class="choices">
+				<label><input type="radio" name="attending" value="si" checked /> <span>Sí, ahí estaré</span></label>
+				<label><input type="radio" name="attending" value="no" /> <span>No podré ir</span></label>
+			</div>
+		</fieldset>
+
+		<label class="field">
+			<span>Número de personas</span>
+			<select name="guests">
+				{[1, 2, 3, 4, 5].map((n) => <option value={n}>{n}</option>)}
+			</select>
+		</label>
+
+		<button type="submit" class="submit">
+			<MessageCircle size={18} /> Confirmar por WhatsApp
+		</button>
+		<p class="note">Confirma antes del {deadline}.</p>
+	</form>
+
+	<div data-rsvp-result hidden class="result">
+		<p class="note">Así llegaría tu confirmación al WhatsApp de los anfitriones:</p>
+		<div class="bubble" data-rsvp-message></div>
+		<p class="note">En esta demo no se envía nada. En tu invitación, el mensaje llega directo a tu WhatsApp.</p>
+		<div class="actions">
+			<a href={cta} target="_blank" rel="noopener" class="submit">Quiero una invitación así</a>
+			<button type="button" class="link" data-rsvp-reset>Volver a probar</button>
+		</div>
+	</div>
+</div>
+
+<style>
+	.rsvp {
+		padding: 1.75rem;
+		border: 1px solid var(--inv-line);
+		border-radius: var(--inv-radius, 1rem);
+		background: var(--inv-surface);
+		text-align: left;
+	}
+
+	.field {
+		display: block;
+	}
+
+	.field > span,
+	.field > legend {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--inv-muted);
+	}
+
+	input:not([type='radio']),
+	select {
+		width: 100%;
+		padding: 0.75rem 0.9rem;
+		border: 1px solid var(--inv-line);
+		border-radius: 0.6rem;
+		background: var(--inv-bg);
+		color: var(--inv-text);
+		font: inherit;
+	}
+
+	input:focus-visible,
+	select:focus-visible {
+		outline: 2px solid var(--inv-accent);
+		outline-offset: 1px;
+	}
+
+	.choices {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem;
+	}
+
+	.choices label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.7rem 0.8rem;
+		border: 1px solid var(--inv-line);
+		border-radius: 0.6rem;
+		cursor: pointer;
+	}
+
+	.choices input {
+		accent-color: var(--inv-accent);
+	}
+
+	.submit {
+		display: inline-flex;
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.85rem 1.25rem;
+		border-radius: 9999px;
+		background: var(--inv-accent);
+		color: var(--inv-accent-contrast);
+		font-weight: 600;
+		cursor: pointer;
+		transition: transform 0.2s ease;
+	}
+
+	.submit:hover {
+		transform: translateY(-1px);
+	}
+
+	.note {
+		font-size: 0.85rem;
+		text-align: center;
+		color: var(--inv-muted);
+	}
+
+	.result {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.bubble {
+		justify-self: end;
+		max-width: 90%;
+		padding: 0.75rem 0.9rem;
+		border-radius: 0.9rem 0.25rem 0.9rem 0.9rem;
+		background: #d9fdd3;
+		color: #111b21;
+		font-family: Inter, sans-serif;
+		font-size: 0.9rem;
+		line-height: 1.4;
+	}
+
+	.actions {
+		display: grid;
+		gap: 0.75rem;
+		justify-items: center;
+	}
+
+	.link {
+		color: var(--inv-muted);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		cursor: pointer;
+	}
+</style>

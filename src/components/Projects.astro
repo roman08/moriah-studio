@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import ArrowRight from 'lucide-astro/ArrowRight';
 import ExternalLink from 'lucide-astro/ExternalLink';
 import MessageCircle from 'lucide-astro/MessageCircle';
 import SectionHeading from './SectionHeading.astro';
@@ -15,7 +16,7 @@ const groups = [
 	{
 		title: 'Proyectos propios y demos',
 		items: projects.filter((p) => p.type !== 'Proyecto real'),
-		grid: 'sm:grid-cols-2 lg:grid-cols-4',
+		grid: 'sm:grid-cols-2 lg:grid-cols-3',
 		compact: true,
 	},
 ].filter((group) => group.items.length > 0);
@@ -35,12 +36,14 @@ const groups = [
 					<h3 class="mb-6 text-sm font-semibold tracking-widest text-gray-soft uppercase" data-reveal>{group.title}</h3>
 					<div class:list={['grid gap-6', group.grid]}>
 						{group.items.map((project) => {
-							const LinkIcon = project.linkLabel ? MessageCircle : ExternalLink;
+							const isWhatsapp = project.url.startsWith('https://wa.me/');
+							const isExternal = project.url.startsWith('http');
+							const LinkIcon = isWhatsapp ? MessageCircle : isExternal ? ExternalLink : ArrowRight;
 							return (
 								<a
 									href={project.url}
-									target="_blank"
-									rel="noopener"
+									target={isExternal ? '_blank' : undefined}
+									rel={isExternal ? 'noopener' : undefined}
 									data-reveal
 									class="group flex flex-col overflow-hidden rounded-3xl border border-white/5 bg-deep transition-colors hover:border-brand-purple-500/40"
 								>
@@ -49,7 +52,7 @@ const groups = [
 											src={project.image}
 											alt={`Captura de ${project.client}`}
 											widths={[400, 800]}
-											sizes={group.compact ? '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw' : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'}
+											sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 											class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
 										/>
 										<span class="absolute top-4 left-4 rounded-full bg-void/80 px-3 py-1 text-xs font-semibold text-silver backdrop-blur">

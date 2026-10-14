@@ -4,6 +4,8 @@ import type { ImageMetadata } from 'astro';
 import profile from '../assets/about/profile.jpeg';
 import biblia from '../assets/projects/biblia.png';
 import cobius from '../assets/projects/cobius.png';
+import demoBoda from '../assets/projects/demo-boda.png';
+import demoXv from '../assets/projects/demo-xv.png';
 import invitacion from '../assets/projects/invitacion.png';
 import iseisa from '../assets/projects/iseisa.png';
 import nacar from '../assets/projects/nacar.png';
@@ -95,6 +97,12 @@ export const projects: Project[] = [
       'Esta organización de conservación ambiental necesitaba difundir su trabajo y conseguir apoyo. Ahora publica sus boletines y actividades en un solo lugar y recibe donaciones desde su sitio.',
     url: 'https://cobius.org/',
     image: cobius,
+    testimonial: {
+      quote:
+        'Me gustó la practicidad con la que el Ing. Román hace las cosas, además de que acepta retroalimentación hasta quedar satisfecho del resultado.',
+      author: 'Gilberto Pozo',
+      role: 'COBIUS',
+    },
   },
   {
     client: 'ISEISA Power',
@@ -133,6 +141,24 @@ export const projects: Project[] = [
       'App para leer y estudiar la Biblia con versículo del día, planes de lectura, diario, notas y estadísticas de progreso. Funciona sin conexión.',
     url: 'https://app-bibllia.netlify.app/',
     image: biblia,
+  },
+  {
+    client: 'Boda de Ana & Luis',
+    type: 'Demo',
+    category: 'Invitación digital',
+    description: 'Invitación elegante con galería de fotos, cuenta regresiva, ubicaciones, itinerario, música y confirmación por WhatsApp.',
+    url: '/demos/boda',
+    linkLabel: 'Ver invitación',
+    image: demoBoda,
+  },
+  {
+    client: 'XV años de Valentina',
+    type: 'Demo',
+    category: 'Invitación digital',
+    description: 'Invitación con fotos, destellos animados, papás y padrinos, programa de la noche, música y confirmación por WhatsApp.',
+    url: '/demos/xv',
+    linkLabel: 'Ver invitación',
+    image: demoXv,
   },
   {
     client: 'Umbra',

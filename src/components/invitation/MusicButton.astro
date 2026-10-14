@@ -1,0 +1,57 @@
+---
+import Music from 'lucide-astro/Music';
+
+interface Props {
+	// Estilo de la melodía en src/scripts/invitation.ts
+	style: 'boda' | 'xv';
+}
+
+const { style } = Astro.props;
+---
+
+<button type="button" data-music={style} aria-pressed="false" class="music">
+	<Music size={18} />
+	<span class="label-off">Activar música</span>
+	<span class="label-on">Pausar música</span>
+</button>
+
+<style>
+	.music {
+		position: fixed;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 40;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.7rem 1.1rem;
+		border: 1px solid var(--inv-line);
+		border-radius: 9999px;
+		background: var(--inv-surface);
+		color: var(--inv-text);
+		font-family: Inter, sans-serif;
+		font-size: 0.85rem;
+		font-weight: 600;
+		box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.4);
+		cursor: pointer;
+	}
+
+	.label-on,
+	.music[aria-pressed='true'] .label-off {
+		display: none;
+	}
+
+	.music[aria-pressed='true'] .label-on {
+		display: inline;
+	}
+
+	.music.is-playing :global(svg) {
+		animation: bounce 0.9s ease-in-out infinite;
+	}
+
+	@keyframes bounce {
+		50% {
+			transform: translateY(-3px) rotate(-8deg);
+		}
+	}
+</style>

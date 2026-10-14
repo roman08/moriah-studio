@@ -1,0 +1,570 @@
+---
+// Invitación de boda de demostración (datos ficticios). Fuera de buscadores y del sitemap.
+// Fotos: stock CC0 sin caras reconocibles (ver src/assets/demos/CREDITOS.txt).
+import { Image } from 'astro:assets';
+import CalendarPlus from 'lucide-astro/CalendarPlus';
+import ChevronDown from 'lucide-astro/ChevronDown';
+import Church from 'lucide-astro/Church';
+import Gift from 'lucide-astro/Gift';
+import MapPin from 'lucide-astro/MapPin';
+import Shirt from 'lucide-astro/Shirt';
+import Wine from 'lucide-astro/Wine';
+import Layout from '../../layouts/Layout.astro';
+import Countdown from '../../components/invitation/Countdown.astro';
+import DemoBanner from '../../components/invitation/DemoBanner.astro';
+import MusicButton from '../../components/invitation/MusicButton.astro';
+import Rsvp from '../../components/invitation/Rsvp.astro';
+import anillos from '../../assets/demos/boda/anillos.jpg';
+import manos from '../../assets/demos/boda/manos.jpg';
+import mesa from '../../assets/demos/boda/mesa.jpg';
+import pasillo from '../../assets/demos/boda/pasillo.jpg';
+import portada from '../../assets/demos/boda/portada.jpg';
+import ramo from '../../assets/demos/boda/ramo.jpg';
+import ramoVestido from '../../assets/demos/boda/ramo-vestido.jpg';
+
+const event = {
+	couple: ['Ana', 'Luis'],
+	date: '2027-03-20T18:00:00-06:00',
+	dateText: 'Sábado 20 de marzo de 2027',
+	city: 'Villahermosa, Tabasco',
+};
+
+const map = (place: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place}, ${event.city}`)}`;
+const calendar =
+	'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+	`&text=${encodeURIComponent('Boda de Ana y Luis')}` +
+	'&dates=20270321T000000Z/20270321T070000Z' +
+	`&location=${encodeURIComponent(event.city)}`;
+
+const places = [
+	{ icon: Church, title: 'Ceremonia religiosa', time: '6:00 p. m.', place: 'Parroquia de San Juan Bautista' },
+	{ icon: Wine, title: 'Recepción', time: '8:00 p. m.', place: 'Jardín Los Almendros' },
+];
+
+const itinerary = [
+	{ time: '6:00 p. m.', title: 'Ceremonia' },
+	{ time: '7:30 p. m.', title: 'Cóctel de bienvenida' },
+	{ time: '8:30 p. m.', title: 'Cena' },
+	{ time: '9:30 p. m.', title: 'Primer baile' },
+	{ time: '10:00 p. m.', title: '¡A celebrar!' },
+];
+
+// Galería: la primera foto ocupa dos filas
+const gallery = [
+	{ src: ramoVestido, alt: 'Novia con ramo de rosas blancas' },
+	{ src: anillos, alt: 'Manos de los novios con sus anillos' },
+	{ src: manos, alt: 'Los novios tomados de la mano' },
+	{ src: ramo, alt: 'Ramo de flores de colores' },
+	{ src: mesa, alt: 'Mesa decorada para la recepción' },
+];
+
+// Hojas del adorno: [x, y, rotación]
+const leaves = [0, 1, 2, 3].flatMap((i) => [
+	[78 - i * 15, 24, -35],
+	[78 - i * 15, 36, 35],
+	[122 + i * 15, 24, 35],
+	[122 + i * 15, 36, -35],
+]);
+---
+
+<Layout title="Ana & Luis · Invitación de boda (demo)" description="Invitación digital de boda de demostración hecha por Moriah Studio." noindex themeColor="#FBF8F3">
+	<link
+		slot="head"
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&display=swap"
+	/>
+
+	<DemoBanner label="boda" />
+
+	<main class="boda">
+		<!-- Portada -->
+		<section class="hero">
+			<svg class="ornament" viewBox="0 0 200 60" aria-hidden="true">
+				<line x1="10" y1="30" x2="190" y2="30" />
+				{leaves.map(([x, y, r]) => <ellipse cx={x} cy={y} rx="7" ry="3" transform={`rotate(${r} ${x} ${y})`} />)}
+				<circle cx="100" cy="30" r="4" />
+			</svg>
+			<div class="arch">
+				<Image src={portada} alt="Los novios abrazados frente al atardecer" widths={[400, 800]} sizes="(min-width: 640px) 18rem, 15rem" loading="eager" class="h-full w-full object-cover" />
+			</div>
+			<p class="eyebrow">Nos casamos</p>
+			<h1 class="names">
+				{event.couple[0]} <span class="amp">&amp;</span> {event.couple[1]}
+			</h1>
+			<p class="date">{event.dateText}</p>
+			<p class="muted">{event.city}</p>
+			<a href="#detalles" class="scroll-hint" aria-label="Ver detalles"><ChevronDown size={28} /></a>
+		</section>
+
+		<section class="photo-quote" data-reveal>
+			<Image src={pasillo} alt="" widths={[800, 1200]} sizes="(min-width: 640px) 40rem, 100vw" class="photo-quote-bg" />
+			<p class="quote">
+				“El amor es paciente, es bondadoso. Todo lo disculpa, todo lo cree, todo lo espera, todo lo soporta.”
+			</p>
+			<p class="quote-ref">1 Corintios 13</p>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Momentos</h2>
+			<div class="gallery">
+				{gallery.map((photo) => (
+					<figure>
+						<Image src={photo.src} alt={photo.alt} widths={[400, 800]} sizes="(min-width: 640px) 13rem, 50vw" class="h-full w-full object-cover" />
+					</figure>
+				))}
+			</div>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Faltan</h2>
+			<Countdown date={event.date} doneText="¡Hoy nos casamos!" />
+		</section>
+
+		<section id="detalles" class="block" data-reveal>
+			<h2 class="title">¿Dónde y cuándo?</h2>
+			<div class="grid gap-4 sm:grid-cols-2">
+				{places.map((item) => {
+					const Icon = item.icon;
+					return (
+						<article class="card">
+							<span class="icon"><Icon size={22} /></span>
+							<h3 class="card-title">{item.title}</h3>
+							<p class="card-time">{item.time}</p>
+							<p class="muted">{item.place}</p>
+							<a href={map(item.place)} target="_blank" rel="noopener" class="button-outline">
+								<MapPin size={16} /> Ver ubicación
+							</a>
+						</article>
+					);
+				})}
+			</div>
+			<a href={calendar} target="_blank" rel="noopener" class="button-outline mt-6">
+				<CalendarPlus size={16} /> Agregar al calendario
+			</a>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Itinerario</h2>
+			<ol class="timeline">
+				{itinerary.map((item) => (
+					<li>
+						<span class="dot" aria-hidden="true"></span>
+						<span class="timeline-time">{item.time}</span>
+						<span class="timeline-title">{item.title}</span>
+					</li>
+				))}
+			</ol>
+		</section>
+
+		<section class="block grid gap-4 sm:grid-cols-2" data-reveal>
+			<article class="card">
+				<span class="icon"><Shirt size={22} /></span>
+				<h3 class="card-title">Código de vestimenta</h3>
+				<p class="card-time">Formal</p>
+				<p class="muted">El blanco es exclusivo de la novia. Te sugerimos tonos tierra o pastel.</p>
+				<div class="swatches" aria-hidden="true">
+					{['#C9B79C', '#A3B18A', '#D8B4A0', '#B5A6C9'].map((color) => <span style={`background:${color}`}></span>)}
+				</div>
+			</article>
+			<article class="card">
+				<span class="icon"><Gift size={22} /></span>
+				<h3 class="card-title">Regalos</h3>
+				<p class="card-time">Lluvia de sobres</p>
+				<p class="muted">Tu presencia es nuestro mejor regalo. Si deseas tener un detalle con nosotros, habrá lluvia de sobres el día del evento.</p>
+			</article>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Confirma tu asistencia</h2>
+			<p class="muted mb-6">Nos encantaría celebrar contigo.</p>
+			<Rsvp eventName="la boda de Ana y Luis" deadline="1 de marzo" label="boda" />
+		</section>
+
+		<footer class="footer">
+			<p class="names small">{event.couple[0]} <span class="amp">&amp;</span> {event.couple[1]}</p>
+			<p class="muted">20 · 03 · 2027</p>
+			<p class="credit">Invitación de demostración hecha por <a href="/">Moriah Studio</a></p>
+		</footer>
+
+		<MusicButton style="boda" />
+	</main>
+
+</Layout>
+
+<script>
+	import '../../scripts/invitation';
+</script>
+
+<style>
+	:global(body) {
+		background: #fbf8f3;
+	}
+
+	.boda {
+		--inv-bg: #fbf8f3;
+		--inv-surface: #ffffff;
+		--inv-text: #3e3a36;
+		--inv-muted: #8a817c;
+		--inv-accent: #a8844f;
+		--inv-accent-contrast: #ffffff;
+		--inv-line: #e7dfd3;
+		--inv-display: 'Cormorant Garamond', Georgia, serif;
+		--inv-script: 'Great Vibes', cursive;
+		--inv-radius: 1.25rem;
+		min-height: 100svh;
+		padding: 3rem 1.25rem 6rem;
+		background:
+			radial-gradient(circle at 50% 0%, rgb(168 132 79 / 0.08), transparent 55%),
+			var(--inv-bg);
+		color: var(--inv-text);
+		font-family: var(--inv-display);
+		font-size: 1.15rem;
+		text-align: center;
+	}
+
+	.hero {
+		display: flex;
+		min-height: calc(100svh - 3rem);
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.ornament {
+		width: 14rem;
+		margin-bottom: 1rem;
+		fill: #a3b18a;
+		stroke: #a3b18a;
+		animation: grow 1.6s ease-out both;
+	}
+
+	.ornament line {
+		stroke-width: 1;
+	}
+
+	.ornament ellipse,
+	.ornament circle {
+		stroke: none;
+	}
+
+	.ornament circle {
+		fill: var(--inv-accent);
+	}
+
+	.arch {
+		width: 15rem;
+		aspect-ratio: 3 / 4;
+		margin-bottom: 1.5rem;
+		overflow: hidden;
+		border: 6px solid var(--inv-surface);
+		border-radius: 999px 999px 1.25rem 1.25rem;
+		box-shadow:
+			0 0 0 1px var(--inv-line),
+			0 25px 50px -20px rgb(62 58 54 / 0.45);
+		animation: fade-up 1.2s 0.2s ease-out both;
+	}
+
+	@media (min-width: 640px) {
+		.arch {
+			width: 18rem;
+		}
+	}
+
+	.photo-quote {
+		position: relative;
+		max-width: 40rem;
+		margin: 3.5rem auto;
+		padding: 4.5rem 1.75rem;
+		overflow: hidden;
+		border-radius: var(--inv-radius);
+		color: white;
+	}
+
+	.photo-quote :global(.photo-quote-bg) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		z-index: -2;
+	}
+
+	.photo-quote::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(180deg, rgb(40 34 28 / 0.55), rgb(40 34 28 / 0.75));
+	}
+
+	.photo-quote {
+		isolation: isolate;
+	}
+
+	.photo-quote .quote {
+		text-shadow: 0 2px 12px rgb(0 0 0 / 0.4);
+	}
+
+	.quote-ref {
+		margin-top: 0.75rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		opacity: 0.85;
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-auto-rows: 9rem;
+		gap: 0.6rem;
+	}
+
+	.gallery figure {
+		overflow: hidden;
+		border-radius: 0.9rem;
+	}
+
+	.gallery figure:first-child {
+		grid-row: span 2;
+	}
+
+	.gallery :global(img) {
+		transition: transform 0.6s ease;
+	}
+
+	.gallery figure:hover :global(img) {
+		transform: scale(1.05);
+	}
+
+	@media (min-width: 640px) {
+		.gallery {
+			grid-template-columns: repeat(3, 1fr);
+			grid-auto-rows: 11rem;
+		}
+	}
+
+	.eyebrow {
+		font-size: 0.9rem;
+		letter-spacing: 0.4em;
+		text-transform: uppercase;
+		color: var(--inv-muted);
+		animation: fade-up 1s 0.3s ease-out both;
+	}
+
+	.names {
+		font-family: var(--inv-script);
+		font-size: clamp(4rem, 17vw, 8rem);
+		font-weight: 400;
+		line-height: 1.1;
+		color: var(--inv-text);
+		animation: fade-up 1.2s 0.5s ease-out both;
+	}
+
+	.names.small {
+		font-size: 3.5rem;
+		animation: none;
+	}
+
+	.amp {
+		color: var(--inv-accent);
+	}
+
+	.date {
+		font-size: 1.4rem;
+		font-weight: 500;
+		letter-spacing: 0.05em;
+		animation: fade-up 1s 0.8s ease-out both;
+	}
+
+	.muted {
+		color: var(--inv-muted);
+	}
+
+	.scroll-hint {
+		margin-top: 3rem;
+		color: var(--inv-accent);
+		animation: nudge 2s ease-in-out infinite;
+	}
+
+	.block {
+		max-width: 40rem;
+		margin: 0 auto;
+		padding: 3.5rem 0;
+		border-top: 1px solid var(--inv-line);
+	}
+
+	.quote {
+		font-size: 1.5rem;
+		font-style: italic;
+		line-height: 1.5;
+	}
+
+	.title {
+		margin-bottom: 1.75rem;
+		font-family: var(--inv-script);
+		font-size: 3rem;
+		font-weight: 400;
+		color: var(--inv-accent);
+	}
+
+	.card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 1.75rem 1.25rem;
+		border: 1px solid var(--inv-line);
+		border-radius: var(--inv-radius);
+		background: var(--inv-surface);
+	}
+
+	.icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		margin-bottom: 0.5rem;
+		border-radius: 9999px;
+		background: rgb(163 177 138 / 0.18);
+		color: #6f7f5a;
+	}
+
+	.card-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+	}
+
+	.card-time {
+		font-size: 1.15rem;
+		color: var(--inv-accent);
+	}
+
+	.button-outline {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1rem;
+		padding: 0.6rem 1.2rem;
+		border: 1px solid var(--inv-accent);
+		border-radius: 9999px;
+		font-family: Inter, sans-serif;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--inv-accent);
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.button-outline:hover {
+		background: var(--inv-accent);
+		color: white;
+	}
+
+	.timeline {
+		position: relative;
+		display: grid;
+		gap: 1.5rem;
+		max-width: 22rem;
+		margin: 0 auto;
+		text-align: left;
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		top: 0.5rem;
+		bottom: 0.5rem;
+		left: 0.45rem;
+		width: 1px;
+		background: var(--inv-line);
+	}
+
+	.timeline li {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1rem 6.5rem 1fr;
+		align-items: baseline;
+		gap: 0.75rem;
+	}
+
+	.dot {
+		width: 0.9rem;
+		height: 0.9rem;
+		border: 2px solid var(--inv-accent);
+		border-radius: 9999px;
+		background: var(--inv-bg);
+		transform: translateY(0.15rem);
+	}
+
+	.timeline-time {
+		font-weight: 600;
+		color: var(--inv-accent);
+	}
+
+	.swatches {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+	}
+
+	.swatches span {
+		width: 1.6rem;
+		height: 1.6rem;
+		border: 2px solid white;
+		border-radius: 9999px;
+		box-shadow: 0 0 0 1px var(--inv-line);
+	}
+
+	.footer {
+		padding-top: 3.5rem;
+		border-top: 1px solid var(--inv-line);
+	}
+
+	.credit {
+		margin-top: 2rem;
+		font-family: Inter, sans-serif;
+		font-size: 0.8rem;
+		color: var(--inv-muted);
+	}
+
+	.credit a {
+		color: var(--inv-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	@keyframes fade-up {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+	}
+
+	@keyframes grow {
+		from {
+			opacity: 0;
+			transform: scaleX(0.4);
+		}
+	}
+
+	@keyframes nudge {
+		50% {
+			transform: translateY(6px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ornament,
+		.arch,
+		.eyebrow,
+		.names,
+		.date,
+		.scroll-hint {
+			animation: none;
+		}
+	}
+</style>

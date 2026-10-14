@@ -1,0 +1,545 @@
+---
+// Invitación de XV años de demostración (datos ficticios). Fuera de buscadores y del sitemap.
+// Fotos: stock CC0 sin caras reconocibles (ver src/assets/demos/CREDITOS.txt).
+import { Image } from 'astro:assets';
+import CalendarPlus from 'lucide-astro/CalendarPlus';
+import ChevronDown from 'lucide-astro/ChevronDown';
+import Church from 'lucide-astro/Church';
+import Crown from 'lucide-astro/Crown';
+import Gift from 'lucide-astro/Gift';
+import GlassWater from 'lucide-astro/GlassWater';
+import MapPin from 'lucide-astro/MapPin';
+import Shirt from 'lucide-astro/Shirt';
+import Layout from '../../layouts/Layout.astro';
+import Countdown from '../../components/invitation/Countdown.astro';
+import DemoBanner from '../../components/invitation/DemoBanner.astro';
+import MusicButton from '../../components/invitation/MusicButton.astro';
+import Rsvp from '../../components/invitation/Rsvp.astro';
+import bengala from '../../assets/demos/xv/bengala.jpg';
+import bengalas from '../../assets/demos/xv/bengalas.jpg';
+import pastel from '../../assets/demos/xv/pastel.jpg';
+import portada from '../../assets/demos/xv/portada.jpg';
+import salon from '../../assets/demos/xv/salon.jpg';
+import tiara from '../../assets/demos/xv/tiara.jpg';
+import zapatillas from '../../assets/demos/xv/zapatillas.jpg';
+
+const event = {
+	name: 'Valentina',
+	date: '2027-05-15T19:00:00-06:00',
+	dateText: 'Sábado 15 de mayo de 2027',
+	city: 'Villahermosa, Tabasco',
+};
+
+const map = (place: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place}, ${event.city}`)}`;
+const calendar =
+	'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+	`&text=${encodeURIComponent('XV años de Valentina')}` +
+	'&dates=20270516T010000Z/20270516T090000Z' +
+	`&location=${encodeURIComponent(event.city)}`;
+
+const places = [
+	{ icon: Church, title: 'Misa de acción de gracias', time: '7:00 p. m.', place: 'Parroquia de la Asunción' },
+	{ icon: GlassWater, title: 'Recepción', time: '8:30 p. m.', place: 'Salón Cristal' },
+];
+
+const family = [
+	{ role: 'Mis papás', names: ['Laura Méndez', 'Jorge Torres'] },
+	{ role: 'Mis padrinos', names: ['Carmen Ruiz', 'Andrés Silva'] },
+];
+
+const itinerary = [
+	{ time: '8:30 p. m.', title: 'Recepción' },
+	{ time: '9:00 p. m.', title: 'Entrada de la quinceañera' },
+	{ time: '9:15 p. m.', title: 'Vals' },
+	{ time: '10:00 p. m.', title: 'Cena' },
+	{ time: '11:00 p. m.', title: 'Baile sorpresa' },
+	{ time: '11:30 p. m.', title: '¡A bailar!' },
+];
+
+const gallery = [
+	{ src: zapatillas, alt: 'Zapatillas con brillos sobre el vestido' },
+	{ src: tiara, alt: 'Tiara con piedras azules' },
+	{ src: salon, alt: 'Salón iluminado con candelabro' },
+	{ src: pastel, alt: 'Pastel de capas con chispas de colores' },
+	{ src: bengalas, alt: 'Bengalas encendidas al anochecer' },
+	{ src: bengala, alt: 'Mano sosteniendo una bengala' },
+];
+
+// Destellos del fondo: posiciones fijas para que el render sea estable
+const sparkles = Array.from({ length: 22 }, (_, i) => ({
+	top: (i * 37) % 100,
+	left: (i * 61 + 13) % 100,
+	size: 2 + (i % 3),
+	delay: (i * 0.37) % 4,
+}));
+---
+
+<Layout title="Valentina · Mis XV años (demo)" description="Invitación digital de XV años de demostración hecha por Moriah Studio." noindex themeColor="#160B24">
+	<link
+		slot="head"
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Pinyon+Script&display=swap"
+	/>
+
+	<DemoBanner label="XV años" />
+
+	<div class="sparkles" aria-hidden="true">
+		{sparkles.map((s) => (
+			<span style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;animation-delay:${s.delay}s`}></span>
+		))}
+	</div>
+
+	<main class="xv">
+		<!-- Portada -->
+		<section class="hero">
+			<div class="hero-bg" aria-hidden="true">
+				<Image src={portada} alt="" widths={[800, 1200]} sizes="100vw" loading="eager" />
+			</div>
+			<span class="crown"><Crown size={40} /></span>
+			<p class="eyebrow">Mis XV años</p>
+			<h1 class="name">{event.name}</h1>
+			<p class="lead">Hay momentos que se viven una sola vez, y quiero compartir este contigo.</p>
+			<p class="date">{event.dateText}</p>
+			<a href="#detalles" class="scroll-hint" aria-label="Ver detalles"><ChevronDown size={28} /></a>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Cuenta regresiva</h2>
+			<Countdown date={event.date} doneText="¡Hoy es la gran noche!" />
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Mi gran noche</h2>
+			<div class="gallery">
+				{gallery.map((photo) => (
+					<figure>
+						<Image src={photo.src} alt={photo.alt} widths={[400, 800]} sizes="(min-width: 640px) 13rem, 50vw" class="h-full w-full object-cover" />
+					</figure>
+				))}
+			</div>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Con la bendición de Dios</h2>
+			<div class="grid gap-4 sm:grid-cols-2">
+				{family.map((group) => (
+					<div class="card">
+						<p class="card-label">{group.role}</p>
+						{group.names.map((n) => <p class="card-name">{n}</p>)}
+					</div>
+				))}
+			</div>
+		</section>
+
+		<section id="detalles" class="block" data-reveal>
+			<h2 class="title">¿Dónde y cuándo?</h2>
+			<div class="grid gap-4 sm:grid-cols-2">
+				{places.map((item) => {
+					const Icon = item.icon;
+					return (
+						<article class="card">
+							<span class="icon"><Icon size={22} /></span>
+							<h3 class="card-title">{item.title}</h3>
+							<p class="card-time">{item.time}</p>
+							<p class="muted">{item.place}</p>
+							<a href={map(item.place)} target="_blank" rel="noopener" class="button-outline">
+								<MapPin size={16} /> Ver ubicación
+							</a>
+						</article>
+					);
+				})}
+			</div>
+			<a href={calendar} target="_blank" rel="noopener" class="button-outline mt-6">
+				<CalendarPlus size={16} /> Agregar al calendario
+			</a>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">Programa</h2>
+			<ol class="program">
+				{itinerary.map((item) => (
+					<li>
+						<span class="program-time">{item.time}</span>
+						<span>{item.title}</span>
+					</li>
+				))}
+			</ol>
+		</section>
+
+		<section class="block grid gap-4 sm:grid-cols-2" data-reveal>
+			<article class="card">
+				<span class="icon"><Shirt size={22} /></span>
+				<h3 class="card-title">Vestimenta</h3>
+				<p class="card-time">Formal</p>
+				<p class="muted">El rosa es exclusivo de la quinceañera. ¡Ven lista para bailar toda la noche!</p>
+			</article>
+			<article class="card">
+				<span class="icon"><Gift size={22} /></span>
+				<h3 class="card-title">Regalos</h3>
+				<p class="card-time">Lluvia de sobres</p>
+				<p class="muted">Tu compañía es el mejor regalo. Si deseas darme un detalle, habrá lluvia de sobres.</p>
+			</article>
+		</section>
+
+		<section class="block" data-reveal>
+			<h2 class="title">¿Me acompañas?</h2>
+			<p class="muted mb-6">Confirma tu asistencia para apartar tu lugar.</p>
+			<Rsvp eventName="los XV años de Valentina" deadline="1 de mayo" label="XV años" />
+		</section>
+
+		<footer class="footer">
+			<p class="name small">{event.name}</p>
+			<p class="muted">15 · 05 · 2027</p>
+			<p class="credit">Invitación de demostración hecha por <a href="/">Moriah Studio</a></p>
+		</footer>
+
+		<MusicButton style="xv" />
+	</main>
+
+</Layout>
+
+<script>
+	import '../../scripts/invitation';
+</script>
+
+<style>
+	:global(body) {
+		background: #160b24;
+	}
+
+	.xv {
+		--inv-bg: #160b24;
+		--inv-surface: rgb(42 22 66 / 0.7);
+		--inv-text: #f6eef8;
+		--inv-muted: #c3b2d1;
+		--inv-accent: #e7c77d;
+		--inv-accent-contrast: #160b24;
+		--inv-line: rgb(231 199 125 / 0.22);
+		--inv-display: 'Cinzel', Georgia, serif;
+		--inv-script: 'Pinyon Script', cursive;
+		--inv-radius: 1.25rem;
+		position: relative;
+		min-height: 100svh;
+		padding: 3rem 1.25rem 6rem;
+		background:
+			radial-gradient(ellipse at 50% -10%, rgb(242 167 195 / 0.25), transparent 60%),
+			radial-gradient(ellipse at 50% 110%, rgb(126 87 194 / 0.25), transparent 60%);
+		color: var(--inv-text);
+		font-family: Inter, sans-serif;
+		text-align: center;
+	}
+
+	/* === Destellos === */
+	.sparkles {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+	}
+
+	.sparkles span {
+		position: absolute;
+		border-radius: 9999px;
+		background: #fff3d6;
+		box-shadow: 0 0 6px 1px rgb(231 199 125 / 0.8);
+		opacity: 0.2;
+		animation: twinkle 3.5s ease-in-out infinite;
+	}
+
+	/* === Portada === */
+	.hero {
+		display: flex;
+		min-height: calc(100svh - 3rem);
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.hero {
+		position: relative;
+		isolation: isolate;
+	}
+
+	.hero-bg {
+		position: absolute;
+		inset: -3rem -1.25rem 0;
+		z-index: -1;
+		overflow: hidden;
+		-webkit-mask-image: linear-gradient(to bottom, black 35%, transparent 95%);
+		mask-image: linear-gradient(to bottom, black 35%, transparent 95%);
+	}
+
+	.hero-bg :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0.4;
+		animation: slow-zoom 20s ease-in-out infinite alternate;
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.6rem;
+	}
+
+	.gallery figure {
+		aspect-ratio: 1;
+		overflow: hidden;
+		border: 1px solid var(--inv-line);
+		border-radius: 1rem;
+	}
+
+	.gallery :global(img) {
+		transition: transform 0.6s ease;
+	}
+
+	.gallery figure:hover :global(img) {
+		transform: scale(1.06);
+	}
+
+	@media (min-width: 640px) {
+		.gallery {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@keyframes slow-zoom {
+		to {
+			transform: scale(1.12);
+		}
+	}
+
+	.crown {
+		color: var(--inv-accent);
+		filter: drop-shadow(0 0 12px rgb(231 199 125 / 0.6));
+		animation: fade-up 1s ease-out both;
+	}
+
+	.eyebrow {
+		font-family: var(--inv-display);
+		font-size: 1rem;
+		letter-spacing: 0.45em;
+		text-transform: uppercase;
+		color: var(--inv-muted);
+		animation: fade-up 1s 0.2s ease-out both;
+	}
+
+	.name {
+		padding: 0 0.5rem;
+		font-family: var(--inv-script);
+		font-size: clamp(4.5rem, 20vw, 9rem);
+		font-weight: 400;
+		line-height: 1.15;
+		background: linear-gradient(100deg, #f7e2a8 0%, #e7c77d 30%, #fff6dc 50%, #e7c77d 70%, #f2a7c3 100%);
+		background-size: 200% 100%;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		animation:
+			fade-up 1.2s 0.4s ease-out both,
+			shine 6s 1.6s linear infinite;
+	}
+
+	.name.small {
+		font-size: 4rem;
+		animation: none;
+	}
+
+	.lead {
+		max-width: 26rem;
+		font-size: 1.05rem;
+		color: var(--inv-muted);
+		animation: fade-up 1s 0.7s ease-out both;
+	}
+
+	.date {
+		margin-top: 0.5rem;
+		font-family: var(--inv-display);
+		font-size: 1.15rem;
+		letter-spacing: 0.08em;
+		animation: fade-up 1s 0.9s ease-out both;
+	}
+
+	.muted {
+		color: var(--inv-muted);
+	}
+
+	.scroll-hint {
+		margin-top: 3rem;
+		color: var(--inv-accent);
+		animation: nudge 2s ease-in-out infinite;
+	}
+
+	/* === Bloques === */
+	.block {
+		position: relative;
+		max-width: 40rem;
+		margin: 0 auto;
+		padding: 3.5rem 0;
+		border-top: 1px solid var(--inv-line);
+	}
+
+	.title {
+		margin-bottom: 1.75rem;
+		font-family: var(--inv-display);
+		font-size: 1.4rem;
+		font-weight: 600;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--inv-accent);
+	}
+
+	.card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 1.75rem 1.25rem;
+		border: 1px solid var(--inv-line);
+		border-radius: var(--inv-radius);
+		background: var(--inv-surface);
+		backdrop-filter: blur(6px);
+	}
+
+	.card-label {
+		margin-bottom: 0.5rem;
+		font-family: var(--inv-display);
+		font-size: 0.85rem;
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		color: var(--inv-muted);
+	}
+
+	.card-name {
+		font-family: var(--inv-script);
+		font-size: 2rem;
+		line-height: 1.2;
+	}
+
+	.icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		margin-bottom: 0.5rem;
+		border: 1px solid var(--inv-line);
+		border-radius: 9999px;
+		color: var(--inv-accent);
+	}
+
+	.card-title {
+		font-family: var(--inv-display);
+		font-size: 1.05rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+	}
+
+	.card-time {
+		color: var(--inv-accent);
+		font-weight: 600;
+	}
+
+	.button-outline {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1rem;
+		padding: 0.6rem 1.2rem;
+		border: 1px solid var(--inv-accent);
+		border-radius: 9999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--inv-accent);
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.button-outline:hover {
+		background: var(--inv-accent);
+		color: var(--inv-accent-contrast);
+	}
+
+	.program {
+		display: grid;
+		gap: 0.75rem;
+		max-width: 24rem;
+		margin: 0 auto;
+	}
+
+	.program li {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.85rem 1.1rem;
+		border: 1px solid var(--inv-line);
+		border-radius: 0.9rem;
+		background: var(--inv-surface);
+		text-align: left;
+	}
+
+	.program-time {
+		flex-shrink: 0;
+		font-weight: 600;
+		color: var(--inv-accent);
+	}
+
+	.footer {
+		position: relative;
+		padding-top: 3.5rem;
+		border-top: 1px solid var(--inv-line);
+	}
+
+	.credit {
+		margin-top: 2rem;
+		font-size: 0.8rem;
+		color: var(--inv-muted);
+	}
+
+	.credit a {
+		color: var(--inv-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	@keyframes twinkle {
+		50% {
+			opacity: 1;
+			transform: scale(1.4);
+		}
+	}
+
+	@keyframes shine {
+		to {
+			background-position: -200% 0;
+		}
+	}
+
+	@keyframes fade-up {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+	}
+
+	@keyframes nudge {
+		50% {
+			transform: translateY(6px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sparkles span,
+		.hero-bg :global(img),
+		.crown,
+		.eyebrow,
+		.name,
+		.lead,
+		.date,
+		.scroll-hint {
+			animation: none;
+		}
+	}
+</style>

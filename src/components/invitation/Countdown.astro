@@ -1,0 +1,62 @@
+---
+interface Props {
+	// Fecha y hora del evento en ISO con zona horaria, p. ej. "2027-03-20T18:00:00-06:00"
+	date: string;
+	doneText?: string;
+}
+
+const { date, doneText = '¡Llegó el gran día!' } = Astro.props;
+const units = [
+	{ key: 'days', label: 'Días' },
+	{ key: 'hours', label: 'Horas' },
+	{ key: 'minutes', label: 'Min' },
+	{ key: 'seconds', label: 'Seg' },
+];
+---
+
+<div data-countdown={date} class="countdown">
+	<div class="grid grid-cols-4 gap-2 sm:gap-4">
+		{units.map((unit) => (
+			<div class="unit">
+				<span class="value" data-unit={unit.key}>00</span>
+				<span class="label">{unit.label}</span>
+			</div>
+		))}
+	</div>
+	<p class="done" data-countdown-done hidden>{doneText}</p>
+</div>
+
+<style>
+	.unit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 1rem 0.25rem;
+		border: 1px solid var(--inv-line);
+		border-radius: var(--inv-radius, 1rem);
+		background: var(--inv-surface);
+	}
+
+	.value {
+		font-family: var(--inv-display);
+		font-size: clamp(1.75rem, 8vw, 2.75rem);
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+		color: var(--inv-accent);
+	}
+
+	.label {
+		margin-top: 0.5rem;
+		font-size: 0.7rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--inv-muted);
+	}
+
+	.done {
+		margin-top: 1rem;
+		font-family: var(--inv-script);
+		font-size: 2rem;
+		color: var(--inv-accent);
+	}
+</style>

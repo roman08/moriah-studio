@@ -12,7 +12,7 @@ import MapPin from 'lucide-astro/MapPin';
 import Shirt from 'lucide-astro/Shirt';
 import Layout from '../../layouts/Layout.astro';
 import Countdown from '../../components/invitation/Countdown.astro';
-import DemoBanner from '../../components/invitation/DemoBanner.astro';
+import DemoBanner from '../../components/demo/DemoBanner.astro';
 import MusicButton from '../../components/invitation/MusicButton.astro';
 import Rsvp from '../../components/invitation/Rsvp.astro';
 import bengala from '../../assets/demos/xv/bengala.jpg';
@@ -81,7 +81,7 @@ const sparkles = Array.from({ length: 22 }, (_, i) => ({
 		href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Pinyon+Script&display=swap"
 	/>
 
-	<DemoBanner label="XV años" />
+	<DemoBanner title="Invitación de demostración" product="una invitación de XV años" />
 
 	<div class="sparkles" aria-hidden="true">
 		{sparkles.map((s) => (

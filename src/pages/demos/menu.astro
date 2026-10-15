@@ -1,0 +1,445 @@
+---
+// Menú digital con QR de demostración (negocio ficticio). Fuera de buscadores y del sitemap.
+// Fotos: stock CC0 (ver src/assets/demos/CREDITOS.txt).
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Clock from 'lucide-astro/Clock';
+import Flame from 'lucide-astro/Flame';
+import Plus from 'lucide-astro/Plus';
+import Layout from '../../layouts/Layout.astro';
+import DemoBanner from '../../components/demo/DemoBanner.astro';
+import OrderCart from '../../components/demo/OrderCart.astro';
+import churros from '../../assets/demos/menu/churros.jpg';
+import churrosCajeta from '../../assets/demos/menu/churros-cajeta.jpg';
+import fresa from '../../assets/demos/menu/fresa.jpg';
+import gringa from '../../assets/demos/menu/gringa.jpg';
+import guacamole from '../../assets/demos/menu/guacamole.jpg';
+import horchata from '../../assets/demos/menu/horchata.jpg';
+import limonada from '../../assets/demos/menu/limonada.jpg';
+import nachos from '../../assets/demos/menu/nachos.jpg';
+import pepino from '../../assets/demos/menu/pepino.jpg';
+import portada from '../../assets/demos/menu/portada.jpg';
+import quesadilla from '../../assets/demos/menu/quesadilla.jpg';
+import tacosAsada from '../../assets/demos/menu/tacos-asada.jpg';
+import tacosDorados from '../../assets/demos/menu/tacos-dorados.jpg';
+import tacosPicadillo from '../../assets/demos/menu/tacos-picadillo.jpg';
+
+type Item = { id: string; name: string; description: string; price: number; image: ImageMetadata; popular?: boolean };
+
+const menu: { id: string; title: string; items: Item[] }[] = [
+	{
+		id: 'tacos',
+		title: 'Tacos',
+		items: [
+			{ id: 'asada', name: 'Tacos de asada', description: 'Orden de 3 con cebolla, cilantro y limón.', price: 65, image: tacosAsada, popular: true },
+			{ id: 'dorados', name: 'Tacos dorados', description: 'Orden de 3, rellenos de pollo, con crema y queso.', price: 60, image: tacosDorados },
+			{ id: 'picadillo', name: 'Tacos de picadillo', description: 'Orden de 3 en tortilla crujiente con lechuga y queso.', price: 60, image: tacosPicadillo },
+		],
+	},
+	{
+		id: 'especialidades',
+		title: 'Especialidades',
+		items: [
+			{ id: 'gringa', name: 'Gringa', description: 'Tortilla de harina con pastor, piña y queso gratinado.', price: 55, image: gringa, popular: true },
+			{ id: 'quesadilla', name: 'Quesadilla', description: 'De harina con queso Oaxaca. Agrega carne por $15.', price: 40, image: quesadilla },
+			{ id: 'nachos', name: 'Nachos El Fogón', description: 'Totopos con queso, frijoles, carne, jalapeños y crema.', price: 85, image: nachos },
+			{ id: 'guacamole', name: 'Guacamole con totopos', description: 'Preparado al momento, para compartir.', price: 70, image: guacamole },
+		],
+	},
+	{
+		id: 'bebidas',
+		title: 'Bebidas',
+		items: [
+			{ id: 'horchata', name: 'Agua de horchata', description: 'Vaso de 1 litro.', price: 30, image: horchata },
+			{ id: 'limonada', name: 'Limonada', description: 'Natural o mineral, vaso de 1 litro.', price: 30, image: limonada },
+			{ id: 'fresa', name: 'Agua de fresa', description: 'Con fruta natural, vaso de 1 litro.', price: 35, image: fresa },
+			{ id: 'pepino', name: 'Agua de pepino con limón', description: 'Refrescante, vaso de 1 litro.', price: 30, image: pepino },
+		],
+	},
+	{
+		id: 'postres',
+		title: 'Postres',
+		items: [
+			{ id: 'churros', name: 'Churros', description: 'Orden de 4 con azúcar y canela.', price: 45, image: churros },
+			{ id: 'churros-cajeta', name: 'Churros con cajeta', description: 'Orden de 4 con cajeta para acompañar.', price: 55, image: churrosCajeta },
+		],
+	},
+];
+
+const money = (n: number) => `$${n}`;
+---
+
+<Layout title="Taquería El Fogón · Menú digital (demo)" description="Menú digital con QR de demostración hecho por Moriah Studio." noindex themeColor="#9F2A1E">
+	<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" />
+
+	<DemoBanner title="Menú digital de demostración" product="un menú digital con QR" />
+
+	<main class="menu">
+		<!-- Portada -->
+		<header class="cover">
+			<Image src={portada} alt="" widths={[640, 1024]} sizes="(min-width: 768px) 48rem, 100vw" loading="eager" class="cover-img" />
+			<div class="cover-content">
+				<p class="table">Mesa 4</p>
+				<h1 class="brand">El Fogón</h1>
+				<p class="tagline">Taquería · desde 1998</p>
+				<p class="status"><span class="dot"></span> Abierto · <Clock size={14} /> cierra a las 11:00 p. m.</p>
+			</div>
+		</header>
+
+		<!-- Categorías fijas al hacer scroll -->
+		<nav class="tabs" aria-label="Categorías del menú" data-tabs>
+			{menu.map((cat) => <a href={`#${cat.id}`} data-tab={cat.id}>{cat.title}</a>)}
+		</nav>
+
+		<div class="content">
+			{menu.map((cat) => (
+				<section id={cat.id} class="category" data-category>
+					<h2 class="category-title">{cat.title}</h2>
+					<ul class="items">
+						{cat.items.map((item) => (
+							<li class="item" data-product data-id={item.id} data-name={item.name} data-price={item.price}>
+								<div class="item-text">
+									<h3 class="item-name">
+										{item.name}
+										{item.popular && (
+											<span class="popular">
+												<Flame size={12} /> Favorito
+											</span>
+										)}
+									</h3>
+									<p class="item-desc">{item.description}</p>
+									<p class="item-price">{money(item.price)}</p>
+								</div>
+								<div class="item-media">
+									<Image src={item.image} alt={item.name} widths={[200, 400]} sizes="7rem" class="item-img" />
+									<div class="item-action">
+										<button type="button" class="d-add" data-add aria-label={`Agregar ${item.name}`}>
+											<Plus size={16} /> Agregar
+										</button>
+										<span class="d-stepper" data-stepper hidden>
+											<button type="button" data-dec aria-label={`Quitar ${item.name}`}>−</button>
+											<span data-count>0</span>
+											<button type="button" data-inc aria-label={`Agregar otro ${item.name}`}>+</button>
+										</span>
+									</div>
+								</div>
+							</li>
+						))}
+					</ul>
+				</section>
+			))}
+
+			<footer class="foot">
+				<p>Precios en pesos mexicanos. Incluyen IVA.</p>
+				<p class="credit">Menú digital de demostración hecho por <a href="/">Moriah Studio</a></p>
+			</footer>
+		</div>
+
+		<OrderCart
+			business="El Fogón"
+			modeLabel="¿Para dónde?"
+			messageLabel="Pedido"
+			modes={['Para comer aquí · Mesa 4', 'Para llevar']}
+			product="un menú digital con QR"
+		/>
+	</main>
+</Layout>
+
+<script>
+	import '../../scripts/demo-order';
+
+	// Resalta la categoría visible en las pestañas
+	const tabs = document.querySelectorAll<HTMLAnchorElement>('[data-tab]');
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) continue;
+				tabs.forEach((tab) => {
+					const active = tab.dataset.tab === entry.target.id;
+					tab.classList.toggle('is-active', active);
+					if (active) tab.scrollIntoView({ block: 'nearest', inline: 'center' });
+				});
+			}
+		},
+		{ rootMargin: '-45% 0px -50% 0px' },
+	);
+	document.querySelectorAll('[data-category]').forEach((section) => observer.observe(section));
+</script>
+
+<style>
+	:global(body) {
+		background: #fff8ee;
+	}
+
+	:global(html) {
+		scroll-padding-top: 6.5rem;
+	}
+
+	.menu {
+		--d-bg: #fff8ee;
+		--d-surface: #ffffff;
+		--d-text: #2b1d16;
+		--d-muted: #7d6a5d;
+		--d-accent: #c2381f;
+		--d-accent-contrast: #ffffff;
+		--d-line: #f0e2cf;
+		--d-display: 'Oswald', sans-serif;
+		--d-font: Inter, sans-serif;
+		max-width: 48rem;
+		min-height: 100svh;
+		margin: 0 auto;
+		padding: 3rem 0 7rem;
+		background: var(--d-bg);
+		color: var(--d-text);
+		font-family: var(--d-font);
+	}
+
+	/* === Portada === */
+	.cover {
+		position: relative;
+		height: 17rem;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.cover :global(.cover-img) {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.cover::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(180deg, rgb(43 29 22 / 0.15) 0%, rgb(43 29 22 / 0.85) 100%);
+	}
+
+	.cover-content {
+		position: absolute;
+		inset: auto 1.25rem 1.25rem;
+		color: white;
+	}
+
+	.table {
+		display: inline-block;
+		margin-bottom: 0.5rem;
+		padding: 0.2rem 0.7rem;
+		border-radius: 9999px;
+		background: #f2b134;
+		color: #2b1d16;
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.brand {
+		font-family: var(--d-display);
+		font-size: 3rem;
+		font-weight: 700;
+		line-height: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+	}
+
+	.tagline {
+		margin-top: 0.25rem;
+		opacity: 0.85;
+	}
+
+	.status {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: 0.6rem;
+		font-size: 0.85rem;
+	}
+
+	.dot {
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 9999px;
+		background: #4ade80;
+		box-shadow: 0 0 0 3px rgb(74 222 128 / 0.3);
+	}
+
+	/* === Pestañas === */
+	.tabs {
+		position: sticky;
+		top: 3rem;
+		z-index: 30;
+		display: flex;
+		gap: 0.5rem;
+		overflow-x: auto;
+		padding: 0.75rem 1.25rem;
+		border-bottom: 1px solid var(--d-line);
+		background: rgb(255 248 238 / 0.95);
+		backdrop-filter: blur(8px);
+		scrollbar-width: none;
+	}
+
+	.tabs::-webkit-scrollbar {
+		display: none;
+	}
+
+	.tabs a {
+		flex-shrink: 0;
+		padding: 0.45rem 1rem;
+		border: 1px solid var(--d-line);
+		border-radius: 9999px;
+		background: var(--d-surface);
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--d-muted);
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.tabs a.is-active {
+		border-color: var(--d-accent);
+		background: var(--d-accent);
+		color: white;
+	}
+
+	/* === Productos === */
+	.content {
+		padding: 0 1.25rem;
+	}
+
+	.category {
+		padding-top: 1.75rem;
+	}
+
+	.category-title {
+		margin-bottom: 0.75rem;
+		font-family: var(--d-display);
+		font-size: 1.6rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		color: var(--d-accent);
+	}
+
+	.items {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.item {
+		display: flex;
+		gap: 1rem;
+		padding: 0.9rem;
+		border: 1px solid var(--d-line);
+		border-radius: 1.1rem;
+		background: var(--d-surface);
+		transition: border-color 0.2s ease;
+	}
+
+	.item.in-cart {
+		border-color: var(--d-accent);
+	}
+
+	.item-text {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.item-name {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 1.05rem;
+		font-weight: 700;
+	}
+
+	.popular {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+		padding: 0.1rem 0.45rem;
+		border-radius: 9999px;
+		background: #fde7d9;
+		color: #c2381f;
+		font-size: 0.7rem;
+		font-weight: 700;
+	}
+
+	.item-desc {
+		margin-top: 0.3rem;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		color: var(--d-muted);
+	}
+
+	.item-price {
+		margin-top: 0.5rem;
+		font-weight: 700;
+	}
+
+	.item-media {
+		position: relative;
+		flex-shrink: 0;
+		width: 7rem;
+		padding-bottom: 1.1rem;
+	}
+
+	.item-media :global(.item-img) {
+		width: 7rem;
+		height: 7rem;
+		border-radius: 0.9rem;
+		object-fit: cover;
+	}
+
+	.item-action {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		white-space: nowrap;
+	}
+
+	.item-action :global(.d-add) {
+		box-shadow: 0 6px 16px -6px rgb(194 56 31 / 0.6);
+	}
+
+	.item-action :global(.d-stepper) {
+		background: var(--d-surface);
+	}
+
+	.foot {
+		padding: 2.5rem 0 1rem;
+		font-size: 0.8rem;
+		text-align: center;
+		color: var(--d-muted);
+	}
+
+	.credit {
+		margin-top: 0.5rem;
+	}
+
+	.credit a {
+		color: var(--d-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	@media (min-width: 768px) {
+		.menu {
+			padding-top: 3rem;
+		}
+
+		.cover {
+			height: 20rem;
+			margin-top: 1rem;
+			border-radius: 1.5rem;
+		}
+
+		.tabs {
+			margin-top: 0.5rem;
+		}
+	}
+</style>

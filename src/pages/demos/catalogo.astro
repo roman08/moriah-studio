@@ -1,0 +1,410 @@
+---
+// Catálogo en línea de demostración (negocio ficticio). Fuera de buscadores y del sitemap.
+// Fotos: stock CC0 (ver src/assets/demos/CREDITOS.txt).
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Cake from 'lucide-astro/Cake';
+import Plus from 'lucide-astro/Plus';
+import Search from 'lucide-astro/Search';
+import Truck from 'lucide-astro/Truck';
+import Layout from '../../layouts/Layout.astro';
+import DemoBanner from '../../components/demo/DemoBanner.astro';
+import OrderCart from '../../components/demo/OrderCart.astro';
+import brownies from '../../assets/demos/catalogo/brownies.jpg';
+import browniesNuez from '../../assets/demos/catalogo/brownies-nuez.jpg';
+import cheesecake from '../../assets/demos/catalogo/cheesecake.jpg';
+import cupcakesFrambuesa from '../../assets/demos/catalogo/cupcakes-frambuesa.jpg';
+import cupcakesVainilla from '../../assets/demos/catalogo/cupcakes-vainilla.jpg';
+import donasChocolate from '../../assets/demos/catalogo/donas-chocolate.jpg';
+import donasGlaseadas from '../../assets/demos/catalogo/donas-glaseadas.jpg';
+import galletas from '../../assets/demos/catalogo/galletas.jpg';
+import macarons from '../../assets/demos/catalogo/macarons.jpg';
+import mousseFresa from '../../assets/demos/catalogo/mousse-fresa.jpg';
+import pastelChocolate from '../../assets/demos/catalogo/pastel-chocolate.jpg';
+import pastelFresa from '../../assets/demos/catalogo/pastel-fresa.jpg';
+
+type Product = { id: string; name: string; detail: string; price: number; category: string; image: ImageMetadata; badge?: string };
+
+const categories = ['Pasteles', 'Cupcakes', 'Galletas', 'Brownies', 'Donas'];
+
+const products: Product[] = [
+	{ id: 'pastel-chocolate', name: 'Pastel de chocolate', detail: '10 porciones', price: 480, category: 'Pasteles', image: pastelChocolate, badge: 'Más pedido' },
+	{ id: 'pastel-fresa', name: 'Pastel de chocolate con fresa', detail: '10 porciones', price: 520, category: 'Pasteles', image: pastelFresa },
+	{ id: 'cheesecake', name: 'Cheesecake de frutos rojos', detail: '8 porciones', price: 420, category: 'Pasteles', image: cheesecake },
+	{ id: 'mousse-fresa', name: 'Pastel de mousse de fresa', detail: '10 porciones', price: 460, category: 'Pasteles', image: mousseFresa, badge: 'Nuevo' },
+	{ id: 'cupcakes-vainilla', name: 'Cupcakes de chocolate', detail: 'Caja de 6', price: 180, category: 'Cupcakes', image: cupcakesVainilla },
+	{ id: 'cupcakes-frambuesa', name: 'Cupcakes de frambuesa', detail: 'Caja de 6', price: 210, category: 'Cupcakes', image: cupcakesFrambuesa },
+	{ id: 'galletas', name: 'Galletas con chispas', detail: 'Docena', price: 120, category: 'Galletas', image: galletas },
+	{ id: 'macarons', name: 'Macarons de frambuesa', detail: 'Caja de 8', price: 160, category: 'Galletas', image: macarons },
+	{ id: 'brownies', name: 'Brownies clásicos', detail: 'Caja de 6', price: 150, category: 'Brownies', image: brownies },
+	{ id: 'brownies-nuez', name: 'Brownies con nuez', detail: 'Caja de 6', price: 170, category: 'Brownies', image: browniesNuez },
+	{ id: 'donas-glaseadas', name: 'Donas glaseadas', detail: 'Caja de 6', price: 140, category: 'Donas', image: donasGlaseadas },
+	{ id: 'donas-chocolate', name: 'Donas de chocolate', detail: 'Caja de 6', price: 150, category: 'Donas', image: donasChocolate },
+];
+
+const money = (n: number) => `$${n.toLocaleString('es-MX')}`;
+---
+
+<Layout title="Dulce Antojo · Catálogo en línea (demo)" description="Catálogo en línea con pedidos por WhatsApp, de demostración, hecho por Moriah Studio." noindex themeColor="#FFF4F2">
+	<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" />
+
+	<DemoBanner title="Catálogo de demostración" product="un catálogo en línea para mi negocio" />
+
+	<main class="shop">
+		<header class="head">
+			<span class="logo"><Cake size={26} /></span>
+			<h1 class="brand">Dulce Antojo</h1>
+			<p class="tagline">Repostería artesanal hecha en casa</p>
+			<p class="info"><Truck size={16} /> Entregas en Villahermosa · pedidos con 24 h de anticipación</p>
+
+			<label class="search">
+				<Search size={18} />
+				<span class="sr-only">Buscar productos</span>
+				<input type="search" placeholder="Busca pasteles, donas, galletas…" data-search />
+			</label>
+
+			<div class="chips" role="group" aria-label="Filtrar por categoría">
+				<button type="button" class="chip is-active" data-filter="Todos" aria-pressed="true">Todos</button>
+				{categories.map((c) => <button type="button" class="chip" data-filter={c} aria-pressed="false">{c}</button>)}
+			</div>
+		</header>
+
+		<ul class="grid" data-grid>
+			{products.map((p) => (
+				<li class="card" data-product data-id={p.id} data-name={`${p.name} (${p.detail})`} data-price={p.price} data-category={p.category}>
+					<div class="card-media">
+						<Image src={p.image} alt={p.name} widths={[320, 640]} sizes="(min-width: 768px) 16rem, 50vw" class="card-img" />
+						{p.badge && <span class="badge">{p.badge}</span>}
+					</div>
+					<div class="card-body">
+						<h2 class="card-name">{p.name}</h2>
+						<p class="card-detail">{p.detail}</p>
+						<div class="card-foot">
+							<span class="card-price">{money(p.price)}</span>
+							<button type="button" class="d-add" data-add aria-label={`Agregar ${p.name}`}>
+								<Plus size={16} />
+							</button>
+							<span class="d-stepper" data-stepper hidden>
+								<button type="button" data-dec aria-label={`Quitar ${p.name}`}>−</button>
+								<span data-count>0</span>
+								<button type="button" data-inc aria-label={`Agregar otro ${p.name}`}>+</button>
+							</span>
+						</div>
+					</div>
+				</li>
+			))}
+		</ul>
+		<p class="empty" data-empty hidden>No encontramos productos con esa búsqueda.</p>
+
+		<footer class="foot">
+			<p>Precios en pesos mexicanos. El costo de envío se confirma por WhatsApp.</p>
+			<p class="credit">Catálogo de demostración hecho por <a href="/">Moriah Studio</a></p>
+		</footer>
+
+		<OrderCart
+			business="Dulce Antojo"
+			modeLabel="Entrega"
+			modes={['Envío a domicilio', 'Recoger en tienda']}
+			product="un catálogo en línea para mi negocio"
+		/>
+	</main>
+</Layout>
+
+<script>
+	import '../../scripts/demo-order';
+
+	// Filtro por categoría + búsqueda por texto
+	const cards = [...document.querySelectorAll<HTMLElement>('[data-product]')];
+	const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+	const search = document.querySelector<HTMLInputElement>('[data-search]');
+	const empty = document.querySelector<HTMLElement>('[data-empty]');
+	let category = 'Todos';
+
+	const normalize = (text: string) =>
+		text
+			.normalize('NFD')
+			.replace(/\p{Diacritic}/gu, '')
+			.toLowerCase();
+
+	const apply = () => {
+		const query = normalize(search?.value ?? '');
+		let visible = 0;
+		for (const card of cards) {
+			const matchCategory = category === 'Todos' || card.dataset.category === category;
+			const matchText = !query || normalize(`${card.dataset.name} ${card.dataset.category}`).includes(query);
+			card.hidden = !(matchCategory && matchText);
+			if (!card.hidden) visible++;
+		}
+		if (empty) empty.hidden = visible > 0;
+	};
+
+	chips.forEach((chip) =>
+		chip.addEventListener('click', () => {
+			category = chip.dataset.filter ?? 'Todos';
+			chips.forEach((c) => {
+				const active = c === chip;
+				c.classList.toggle('is-active', active);
+				c.setAttribute('aria-pressed', String(active));
+			});
+			apply();
+		}),
+	);
+	search?.addEventListener('input', apply);
+</script>
+
+<style>
+	:global(body) {
+		background: #fff4f2;
+	}
+
+	.shop {
+		--d-bg: #fff4f2;
+		--d-surface: #ffffff;
+		--d-text: #3b2a2f;
+		--d-muted: #8a7076;
+		--d-accent: #c2416b;
+		--d-accent-contrast: #ffffff;
+		--d-line: #f6dde2;
+		--d-display: 'DM Serif Display', Georgia, serif;
+		--d-font: Inter, sans-serif;
+		max-width: 64rem;
+		min-height: 100svh;
+		margin: 0 auto;
+		padding: 4.5rem 1.25rem 7rem;
+		color: var(--d-text);
+		font-family: var(--d-font);
+	}
+
+	/* === Encabezado === */
+	.head {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.logo {
+		display: flex;
+		width: 3.5rem;
+		height: 3.5rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--d-accent);
+		color: white;
+		box-shadow: 0 10px 24px -10px rgb(194 65 107 / 0.7);
+	}
+
+	.brand {
+		margin-top: 0.75rem;
+		font-family: var(--d-display);
+		font-size: clamp(2.5rem, 9vw, 3.5rem);
+		font-weight: 400;
+		line-height: 1;
+	}
+
+	.tagline {
+		margin-top: 0.4rem;
+		color: var(--d-muted);
+	}
+
+	.info {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 1rem;
+		padding: 0.4rem 0.9rem;
+		border-radius: 9999px;
+		background: #fde4ea;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--d-accent);
+	}
+
+	.search {
+		display: flex;
+		width: 100%;
+		max-width: 28rem;
+		align-items: center;
+		gap: 0.6rem;
+		margin-top: 1.5rem;
+		padding: 0 1rem;
+		border: 1px solid var(--d-line);
+		border-radius: 9999px;
+		background: var(--d-surface);
+		color: var(--d-muted);
+	}
+
+	.search:focus-within {
+		border-color: var(--d-accent);
+	}
+
+	.search input {
+		flex: 1;
+		padding: 0.8rem 0;
+		border: 0;
+		background: transparent;
+		color: var(--d-text);
+		font: inherit;
+		outline: none;
+	}
+
+	.chips {
+		display: flex;
+		max-width: 100%;
+		gap: 0.5rem;
+		overflow-x: auto;
+		margin-top: 1rem;
+		padding-bottom: 0.25rem;
+		scrollbar-width: none;
+	}
+
+	.chip {
+		flex-shrink: 0;
+		padding: 0.45rem 1rem;
+		border: 1px solid var(--d-line);
+		border-radius: 9999px;
+		background: var(--d-surface);
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--d-muted);
+		cursor: pointer;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.chip.is-active {
+		border-color: var(--d-accent);
+		background: var(--d-accent);
+		color: white;
+	}
+
+	/* === Productos === */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.85rem;
+		margin-top: 1.75rem;
+	}
+
+	@media (min-width: 768px) {
+		.grid {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 1.25rem;
+		}
+	}
+
+	.card {
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		border: 1px solid var(--d-line);
+		border-radius: 1.1rem;
+		background: var(--d-surface);
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.card[hidden] {
+		display: none;
+	}
+
+	.card.in-cart {
+		border-color: var(--d-accent);
+	}
+
+	.card-media {
+		position: relative;
+		aspect-ratio: 1;
+		overflow: hidden;
+	}
+
+	.card-media :global(.card-img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.5s ease;
+	}
+
+	.card:hover :global(.card-img) {
+		transform: scale(1.05);
+	}
+
+	.badge {
+		position: absolute;
+		top: 0.6rem;
+		left: 0.6rem;
+		padding: 0.2rem 0.6rem;
+		border-radius: 9999px;
+		background: var(--d-surface);
+		font-size: 0.7rem;
+		font-weight: 700;
+		color: var(--d-accent);
+	}
+
+	.card-body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding: 0.8rem 0.85rem 0.9rem;
+	}
+
+	.card-name {
+		font-size: 0.95rem;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+
+	.card-detail {
+		margin-top: 0.2rem;
+		font-size: 0.8rem;
+		color: var(--d-muted);
+	}
+
+	.card-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-top: auto;
+		padding-top: 0.75rem;
+	}
+
+	.card-price {
+		font-weight: 700;
+	}
+
+	.card-foot :global(.d-add) {
+		padding: 0.5rem;
+	}
+
+	.card-foot :global(.d-stepper button) {
+		width: 1.7rem;
+		height: 1.7rem;
+	}
+
+	.empty {
+		margin-top: 2rem;
+		text-align: center;
+		color: var(--d-muted);
+	}
+
+	.foot {
+		padding: 2.5rem 0 1rem;
+		font-size: 0.8rem;
+		text-align: center;
+		color: var(--d-muted);
+	}
+
+	.credit {
+		margin-top: 0.5rem;
+	}
+
+	.credit a {
+		color: var(--d-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+</style>

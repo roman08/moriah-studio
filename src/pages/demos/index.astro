@@ -1,0 +1,70 @@
+---
+// Página con todos los demos, agrupados. Sí se indexa (los demos individuales no).
+import ArrowRight from 'lucide-astro/ArrowRight';
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import WhatsAppButton from '../../components/WhatsAppButton.astro';
+import { demoGroups, projects, whatsappLink } from '../../data/site';
+
+const descriptions: Record<(typeof demoGroups)[number], string> = {
+	'Para negocios': 'Herramientas para vender más: tus clientes arman su pedido y te llega directo a WhatsApp.',
+	Automatización: 'Tareas que se hacen solas mientras tú atiendes tu negocio.',
+	Invitaciones: 'Para bodas, XV años, cumpleaños o cualquier evento.',
+	'Sitios web': 'Sitios completos de ejemplo para distintos giros.',
+};
+
+const groups = demoGroups
+	.map((title) => ({ title, items: projects.filter((p) => p.type === 'Demo' && p.demoGroup === title) }))
+	.filter((group) => group.items.length > 0);
+
+const cta = whatsappLink('Hola Moriah Studio, vi sus demos y tengo una idea para mi negocio.');
+---
+
+<Layout
+	title="Demos interactivos · Moriah Studio"
+	description="Prueba menús digitales, catálogos en línea, bots de WhatsApp, invitaciones y sitios web de ejemplo hechos por Moriah Studio."
+>
+	<Header />
+	<main class="mx-auto max-w-6xl px-4 pt-32 pb-24 sm:px-6">
+		<div class="mx-auto max-w-2xl text-center">
+			<p class="mb-3 text-sm font-semibold tracking-widest text-brand-blue-400 uppercase">Demos</p>
+			<h1 class="font-display text-4xl font-bold tracking-tight sm:text-5xl">
+				Prueba lo que podemos <span class="text-brand-gradient">hacer por ti</span>
+			</h1>
+			<p class="mt-4 text-lg text-gray-soft">
+				Todos funcionan: haz pedidos, agenda citas o abre invitaciones. Los negocios y los datos son de ejemplo y no se envía nada.
+			</p>
+		</div>
+
+		<div class="mt-16 space-y-16">
+			{groups.map((group) => (
+				<section aria-labelledby={`grupo-${group.title}`}>
+					<div class="mb-6" data-reveal>
+						<h2 id={`grupo-${group.title}`} class="font-display text-2xl font-semibold">{group.title}</h2>
+						<p class="mt-1 text-gray-soft">{descriptions[group.title]}</p>
+					</div>
+					<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						{group.items.map((project) => <ProjectCard project={project} compact />)}
+					</div>
+				</section>
+			))}
+		</div>
+
+		<div data-reveal class="mt-20 rounded-3xl border border-white/10 bg-elevated px-6 py-12 text-center sm:px-12">
+			<h2 class="font-display text-2xl font-bold sm:text-3xl">¿Tienes una idea distinta?</h2>
+			<p class="mx-auto mt-3 max-w-xl text-gray-soft">Cuéntanos qué necesita tu negocio y te decimos cómo resolverlo.</p>
+			<a
+				href={cta}
+				target="_blank"
+				rel="noopener"
+				class="bg-brand-gradient group mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-glow-purple transition-shadow hover:shadow-glow-mix"
+			>
+				Escríbenos por WhatsApp <ArrowRight size={18} class="transition-transform group-hover:translate-x-1" />
+			</a>
+		</div>
+	</main>
+	<Footer />
+	<WhatsAppButton />
+</Layout>

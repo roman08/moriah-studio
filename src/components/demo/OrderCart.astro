@@ -1,0 +1,357 @@
+---
+// Carrito + panel de pedido para los demos de menú y catálogo (lógica en src/scripts/demo-order.ts).
+// Se tematiza con variables --d-* definidas por cada página.
+import ShoppingBag from 'lucide-astro/ShoppingBag';
+import X from 'lucide-astro/X';
+import { whatsappLink } from '../../data/site';
+
+interface Props {
+	// Nombre del negocio en el mensaje de WhatsApp
+	business: string;
+	// Pregunta y opciones de modalidad, p. ej. "Entrega" → ["A domicilio", "Recoger en tienda"]
+	modeLabel: string;
+	modes: string[];
+	// Etiqueta de la modalidad dentro del mensaje (por defecto, modeLabel)
+	messageLabel?: string;
+	// Qué se cotiza en el botón final, p. ej. "un menú digital"
+	product: string;
+}
+
+const { business, modeLabel, modes, product, messageLabel = modeLabel } = Astro.props;
+const cta = whatsappLink(`Hola Moriah Studio, vi su demo y me interesa ${product}.`);
+---
+
+<div data-order data-business={business} data-mode-label={messageLabel}>
+	<button type="button" class="cart-bar" data-cart-open hidden>
+		<span class="inline-flex items-center gap-2"><ShoppingBag size={18} /> Ver pedido <span class="badge" data-cart-count>0</span></span>
+		<span data-cart-total>$0</span>
+	</button>
+
+	<dialog class="sheet" data-cart-sheet aria-labelledby="cart-title">
+		<div class="sheet-head">
+			<h2 id="cart-title">Tu pedido</h2>
+			<button type="button" class="close" data-cart-close aria-label="Cerrar"><X size={20} /></button>
+		</div>
+
+		<div data-cart-step="cart">
+			<ul class="lines" data-cart-list></ul>
+			<p class="total"><span>Total</span><span data-cart-total>$0</span></p>
+
+			<form class="form" data-order-form>
+				<label class="field">
+					<span>Nombre</span>
+					<input name="name" required autocomplete="name" placeholder="¿A nombre de quién?" />
+				</label>
+				<fieldset class="field">
+					<legend>{modeLabel}</legend>
+					<div class="modes">
+						{modes.map((mode, i) => (
+							<label><input type="radio" name="mode" value={mode} checked={i === 0} /> <span>{mode}</span></label>
+						))}
+					</div>
+				</fieldset>
+				<label class="field">
+					<span>Notas (opcional)</span>
+					<textarea name="notes" rows="2" placeholder="Ej. sin cebolla, entregar a las 3 p. m."></textarea>
+				</label>
+				<button type="submit" class="primary">Enviar pedido por WhatsApp</button>
+			</form>
+		</div>
+
+		<div data-cart-step="sent" hidden class="sent">
+			<p class="note">Así le llegaría tu pedido al negocio por WhatsApp:</p>
+			<div class="bubble" data-order-message></div>
+			<p class="note">En este demo no se envía nada. En tu versión, el pedido llega directo a tu WhatsApp.</p>
+			<a href={cta} target="_blank" rel="noopener" class="primary">Quiero uno así para mi negocio</a>
+			<button type="button" class="link" data-order-reset>Hacer otro pedido</button>
+		</div>
+	</dialog>
+</div>
+
+<style>
+	/* === Barra del carrito === */
+	.cart-bar {
+		position: fixed;
+		bottom: 1rem;
+		left: 50%;
+		z-index: 40;
+		display: flex;
+		width: min(calc(100% - 2rem), 28rem);
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.9rem 1.25rem;
+		border-radius: 9999px;
+		background: var(--d-accent);
+		color: var(--d-accent-contrast);
+		font-weight: 700;
+		box-shadow: 0 16px 40px -12px rgb(0 0 0 / 0.45);
+		transform: translateX(-50%);
+		cursor: pointer;
+		animation: rise 0.3s ease-out;
+	}
+
+	.badge {
+		display: inline-flex;
+		min-width: 1.5rem;
+		justify-content: center;
+		padding: 0 0.4rem;
+		border-radius: 9999px;
+		background: var(--d-accent-contrast);
+		color: var(--d-accent);
+		font-size: 0.8rem;
+	}
+
+	/* === Panel: hoja inferior en celular, ventana centrada en escritorio === */
+	.sheet {
+		width: 100%;
+		max-width: 32rem;
+		max-height: 88vh;
+		margin: auto auto 0;
+		padding: 1.25rem 1.25rem 1.5rem;
+		border: 0;
+		border-radius: 1.5rem 1.5rem 0 0;
+		background: var(--d-surface);
+		color: var(--d-text);
+		font-family: var(--d-font, Inter, sans-serif);
+		overflow-y: auto;
+	}
+
+	.sheet[open] {
+		animation: rise 0.3s ease-out;
+	}
+
+	.sheet::backdrop {
+		background: rgb(0 0 0 / 0.5);
+		backdrop-filter: blur(2px);
+	}
+
+	@media (min-width: 640px) {
+		.sheet {
+			margin: auto;
+			border-radius: 1.5rem;
+		}
+	}
+
+	.sheet-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+
+	.sheet-head h2 {
+		font-family: var(--d-display, inherit);
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+
+	.close {
+		padding: 0.4rem;
+		border-radius: 9999px;
+		color: var(--d-muted);
+		cursor: pointer;
+	}
+
+	.lines {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.lines :global(li) {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		align-items: center;
+		gap: 0.75rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid var(--d-line);
+	}
+
+	.lines :global(.d-line-name) {
+		font-weight: 600;
+		line-height: 1.25;
+	}
+
+	.lines :global(.d-line-name small) {
+		display: block;
+		font-weight: 400;
+		color: var(--d-muted);
+	}
+
+	.lines :global(.d-line-total) {
+		min-width: 4rem;
+		text-align: right;
+		font-weight: 600;
+	}
+
+	.total {
+		display: flex;
+		justify-content: space-between;
+		margin: 1rem 0 1.25rem;
+		font-size: 1.15rem;
+		font-weight: 700;
+	}
+
+	.form {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.field > span,
+	.field > legend {
+		display: block;
+		margin-bottom: 0.4rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--d-muted);
+	}
+
+	input:not([type='radio']),
+	textarea {
+		width: 100%;
+		padding: 0.7rem 0.85rem;
+		border: 1px solid var(--d-line);
+		border-radius: 0.75rem;
+		background: var(--d-bg);
+		color: var(--d-text);
+		font: inherit;
+	}
+
+	input:focus-visible,
+	textarea:focus-visible {
+		outline: 2px solid var(--d-accent);
+		outline-offset: 1px;
+	}
+
+	.modes {
+		display: grid;
+		gap: 0.5rem;
+	}
+
+	.modes label {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.65rem 0.8rem;
+		border: 1px solid var(--d-line);
+		border-radius: 0.75rem;
+		cursor: pointer;
+	}
+
+	.modes input {
+		accent-color: var(--d-accent);
+	}
+
+	.primary {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		padding: 0.9rem 1.25rem;
+		border-radius: 9999px;
+		background: var(--d-accent);
+		color: var(--d-accent-contrast);
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.sent {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.note {
+		font-size: 0.875rem;
+		text-align: center;
+		color: var(--d-muted);
+	}
+
+	.bubble {
+		justify-self: end;
+		max-width: 92%;
+		padding: 0.8rem 0.95rem;
+		border-radius: 0.9rem 0.25rem 0.9rem 0.9rem;
+		background: #d9fdd3;
+		color: #111b21;
+		font-family: Inter, sans-serif;
+		font-size: 0.9rem;
+		line-height: 1.45;
+		white-space: pre-line;
+	}
+
+	.link {
+		justify-self: center;
+		color: var(--d-muted);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		cursor: pointer;
+	}
+
+	/* === Botones de agregar y contadores (los usan también las tarjetas de producto de la página) === */
+	:global(.d-add) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.5rem 0.95rem;
+		border-radius: 9999px;
+		background: var(--d-accent);
+		color: var(--d-accent-contrast);
+		font-size: 0.875rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: transform 0.15s ease;
+	}
+
+	:global(.d-add:active) {
+		transform: scale(0.95);
+	}
+
+	:global(.d-stepper) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.2rem;
+		border: 1px solid var(--d-accent);
+		border-radius: 9999px;
+		font-weight: 700;
+	}
+
+	:global(.d-stepper[hidden]) {
+		display: none;
+	}
+
+	:global(.d-stepper button) {
+		display: inline-flex;
+		width: 1.9rem;
+		height: 1.9rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--d-accent);
+		color: var(--d-accent-contrast);
+		font-size: 1.1rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	:global(.d-stepper > span) {
+		min-width: 1.5rem;
+		text-align: center;
+	}
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translate(var(--tx, 0), 20px);
+		}
+	}
+
+	.cart-bar {
+		--tx: -50%;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cart-bar,
+		.sheet[open] {
+			animation: none;
+		}
+	}
+</style>

@@ -8,8 +8,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   // URL pública del sitio. Cámbiala aquí cuando tengas dominio propio.
   site: 'https://moriah-studio.netlify.app',
-  // Las invitaciones demo no se indexan ni van al sitemap.
-  integrations: [sitemap({ filter: (page) => !page.includes('/demos/') })],
+  // Los demos individuales (/demos/xxx/) no se indexan ni van al sitemap; la página /demos/ sí.
+  integrations: [sitemap({ filter: (page) => !/\/demos\/.+/.test(page) })],
   vite: {
     plugins: [tailwindcss()],
     build: {

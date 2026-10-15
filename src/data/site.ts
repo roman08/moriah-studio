@@ -5,6 +5,9 @@ import profile from '../assets/about/profile.jpeg';
 import biblia from '../assets/projects/biblia.png';
 import cobius from '../assets/projects/cobius.png';
 import demoBoda from '../assets/projects/demo-boda.png';
+import demoCatalogo from '../assets/projects/demo-catalogo.png';
+import demoChat from '../assets/projects/demo-chat.png';
+import demoMenu from '../assets/projects/demo-menu.png';
 import demoXv from '../assets/projects/demo-xv.png';
 import invitacion from '../assets/projects/invitacion.png';
 import iseisa from '../assets/projects/iseisa.png';
@@ -33,6 +36,7 @@ export const whatsappUrl = whatsappLink(site.whatsappMessage);
 export const nav = [
   { label: 'Servicios', href: '/#servicios' },
   { label: 'Proyectos', href: '/#proyectos' },
+  { label: 'Demos', href: '/demos' },
   { label: 'Sobre mí', href: '/#nosotros' },
   { label: 'Proceso', href: '/#proceso' },
   { label: 'Preguntas', href: '/#faq' },
@@ -72,10 +76,14 @@ export const services = [
   },
 ] as const;
 
+export const demoGroups = ['Para negocios', 'Automatización', 'Invitaciones', 'Sitios web'] as const;
+
 type Project = {
   client: string;
-  // 'Proyecto real' va en el grupo de clientes; el resto en "Proyectos propios y demos".
+  // En la página principal se muestran 'Proyecto real' y 'Proyecto personal'; los 'Demo' viven en /demos.
   type: 'Proyecto real' | 'Proyecto personal' | 'Demo';
+  // Solo para demos: grupo en /demos
+  demoGroup?: (typeof demoGroups)[number];
   category: string;
   description: string;
   url: string;
@@ -143,8 +151,39 @@ export const projects: Project[] = [
     image: biblia,
   },
   {
+    client: 'Taquería El Fogón',
+    type: 'Demo',
+    demoGroup: 'Para negocios',
+    category: 'Menú digital con QR',
+    description: 'Menú con fotos y categorías: el cliente escanea el QR de su mesa, arma su pedido y lo envía por WhatsApp.',
+    url: '/demos/menu',
+    linkLabel: 'Probar menú',
+    image: demoMenu,
+  },
+  {
+    client: 'Dulce Antojo',
+    type: 'Demo',
+    demoGroup: 'Para negocios',
+    category: 'Catálogo en línea',
+    description: 'Repostería con buscador, filtros por categoría, carrito y pedidos por WhatsApp, sin comisiones por venta.',
+    url: '/demos/catalogo',
+    linkLabel: 'Probar catálogo',
+    image: demoCatalogo,
+  },
+  {
+    client: 'Asistente de WhatsApp',
+    type: 'Demo',
+    demoGroup: 'Automatización',
+    category: 'Bot para agendar citas',
+    description: 'Chat simulado de una clínica que agenda citas solo, mientras el sistema guarda la cita y programa recordatorios.',
+    url: '/#demo',
+    linkLabel: 'Probar chat',
+    image: demoChat,
+  },
+  {
     client: 'Boda de Ana & Luis',
     type: 'Demo',
+    demoGroup: 'Invitaciones',
     category: 'Invitación digital',
     description: 'Invitación elegante con galería de fotos, cuenta regresiva, ubicaciones, itinerario, música y confirmación por WhatsApp.',
     url: '/demos/boda',
@@ -154,6 +193,7 @@ export const projects: Project[] = [
   {
     client: 'XV años de Valentina',
     type: 'Demo',
+    demoGroup: 'Invitaciones',
     category: 'Invitación digital',
     description: 'Invitación con fotos, destellos animados, papás y padrinos, programa de la noche, música y confirmación por WhatsApp.',
     url: '/demos/xv',
@@ -163,6 +203,7 @@ export const projects: Project[] = [
   {
     client: 'Umbra',
     type: 'Demo',
+    demoGroup: 'Sitios web',
     category: 'Cafetería de especialidad',
     description: 'Sitio con carta, galería, reservación de mesas y pedidos para llevar.',
     url: 'https://cafeteria-umbra.netlify.app/',
@@ -171,6 +212,7 @@ export const projects: Project[] = [
   {
     client: 'Nácar',
     type: 'Demo',
+    demoGroup: 'Sitios web',
     category: 'Clínica dental',
     description: 'Sitio para clínica con tratamientos, equipo médico y solicitud de citas.',
     url: 'https://clinica-nacar.netlify.app/',
@@ -224,6 +266,21 @@ export const startingPrices: { service: string; detail: string; price: string }[
     price: 'desde $6,500 MXN',
   },
   {
+    service: 'Menú digital con QR',
+    detail: 'Menú con fotos y categorías, pedidos por WhatsApp y código QR listo para imprimir.',
+    price: 'desde $1,500 MXN',
+  },
+  {
+    service: 'Catálogo en línea',
+    detail: 'Tus productos con fotos, carrito y pedidos por WhatsApp, sin comisiones por venta.',
+    price: 'desde $3,000 MXN',
+  },
+  {
+    service: 'Sistema de citas',
+    detail: 'Tus clientes eligen servicio, día y hora; tú recibes la cita y ellos un recordatorio.',
+    price: 'desde $4,500 MXN',
+  },
+  {
     service: 'Automatizaciones',
     detail: 'Respuestas, cotizaciones, recordatorios o reportes.',
     price: 'según el proceso',
@@ -242,6 +299,16 @@ export const startingPrices: { service: string; detail: string; price: string }[
     service: 'Invitación personalizada',
     detail: 'Diseño temático hecho para tu evento, con galería y música.',
     price: 'desde $800 MXN',
+  },
+  {
+    service: 'Tarjeta de presentación digital',
+    detail: 'Página personal con tus datos, redes, botón para guardar tu contacto y código QR.',
+    price: 'desde $500 MXN',
+  },
+  {
+    service: 'Plan de mantenimiento',
+    detail: 'Hosting, respaldos, cambios menores y soporte para tu sitio.',
+    price: 'desde $600 MXN al mes',
   },
 ];
 

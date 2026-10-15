@@ -41,3 +41,10 @@ catalogo/brownies.jpg — CC0 — stocksnap — https://stocksnap.io/photo/choco
 catalogo/brownies-nuez.jpg — CC0 — rawpixel — https://www.rawpixel.com/image/5906085/photo-image-background-public-domain-tree
 catalogo/donas-glaseadas.jpg — CC0 — stocksnap — https://stocksnap.io/photo/donut-sprinkles-46KSWRAA9X
 catalogo/donas-chocolate.jpg — CC0 — stocksnap — https://stocksnap.io/photo/donut-sprinkles-GI8MR5LOLC
+citas/portada.jpg — CC0 — rawpixel — https://www.rawpixel.com/image/5948519/free-public-domain-cc0-photo
+citas/herramientas.jpg — CC0 — stocksnap — https://stocksnap.io/photo/barbershop-brush-GZP9ZEQPFL
+citas/navaja.jpg — CC0 — rawpixel — https://www.rawpixel.com/image/5944122/free-public-domain-cc0-photo
+tarjeta/portada.jpg — CC0 — stocksnap — https://stocksnap.io/photo/interior-design-HIH67XC5G0
+tarjeta/sala.jpg — CC0 — stocksnap — https://stocksnap.io/photo/couch-furniture-TQNWBTLHLY
+tarjeta/cocina.jpg — CC0 — rawpixel — https://www.rawpixel.com/image/5906894/photo-image-public-domain-kitchen-interior
+tarjeta/comedor.jpg — CC0 — stocksnap — https://stocksnap.io/photo/architecture-house-9QLIF5KSSQ

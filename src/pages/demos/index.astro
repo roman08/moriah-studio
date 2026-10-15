@@ -9,7 +9,7 @@ import WhatsAppButton from '../../components/WhatsAppButton.astro';
 import { demoGroups, projects, whatsappLink } from '../../data/site';
 
 const descriptions: Record<(typeof demoGroups)[number], string> = {
-	'Para negocios': 'Herramientas para vender más: tus clientes arman su pedido y te llega directo a WhatsApp.',
+	'Para negocios': 'Herramientas para vender más y atender mejor: pedidos, citas y tu contacto siempre a la mano.',
 	Automatización: 'Tareas que se hacen solas mientras tú atiendes tu negocio.',
 	Invitaciones: 'Para bodas, XV años, cumpleaños o cualquier evento.',
 	'Sitios web': 'Sitios completos de ejemplo para distintos giros.',
@@ -45,7 +45,8 @@ const cta = whatsappLink('Hola Moriah Studio, vi sus demos y tengo una idea para
 						<h2 id={`grupo-${group.title}`} class="font-display text-2xl font-semibold">{group.title}</h2>
 						<p class="mt-1 text-gray-soft">{descriptions[group.title]}</p>
 					</div>
-					<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					<!-- Con 4 demos, 2 × 2 para no dejar una tarjeta sola -->
+					<div class:list={['grid gap-6 sm:grid-cols-2', group.items.length !== 4 && 'lg:grid-cols-3']}>
 						{group.items.map((project) => <ProjectCard project={project} compact />)}
 					</div>
 				</section>

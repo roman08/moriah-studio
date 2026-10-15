@@ -1,0 +1,991 @@
+---
+// Sistema de citas de demostración (barbería ficticia). Fuera de buscadores y del sitemap.
+// Fotos: stock CC0 sin caras (ver src/assets/demos/CREDITOS.txt). Las fechas y horarios se generan en el navegador.
+import { Image } from 'astro:assets';
+import Bell from 'lucide-astro/Bell';
+import CalendarCheck from 'lucide-astro/CalendarCheck';
+import CalendarPlus from 'lucide-astro/CalendarPlus';
+import CircleCheck from 'lucide-astro/CircleCheck';
+import Clock from 'lucide-astro/Clock';
+import Lock from 'lucide-astro/Lock';
+import MapPin from 'lucide-astro/MapPin';
+import Scissors from 'lucide-astro/Scissors';
+import Layout from '../../layouts/Layout.astro';
+import DemoBanner from '../../components/demo/DemoBanner.astro';
+import herramientas from '../../assets/demos/citas/herramientas.jpg';
+import navaja from '../../assets/demos/citas/navaja.jpg';
+import portada from '../../assets/demos/citas/portada.jpg';
+import { whatsappLink } from '../../data/site';
+
+const services = [
+	{ id: 'corte', name: 'Corte clásico', minutes: 30, price: 150 },
+	{ id: 'corte-barba', name: 'Corte + barba', minutes: 50, price: 220 },
+	{ id: 'barba', name: 'Arreglo de barba', minutes: 25, price: 100 },
+	{ id: 'afeitado', name: 'Afeitado tradicional', minutes: 40, price: 160 },
+	{ id: 'infantil', name: 'Corte infantil', minutes: 30, price: 120 },
+];
+
+const barbers = [
+	{ id: 'cualquiera', name: 'El primero disponible', specialty: 'Más horarios para elegir' },
+	{ id: 'carlos', name: 'Carlos', specialty: 'Fades y diseños' },
+	{ id: 'miguel', name: 'Miguel', specialty: 'Barba y afeitado' },
+	{ id: 'andres', name: 'Andrés', specialty: 'Cortes clásicos' },
+];
+
+const steps = ['Servicio', 'Barbero', 'Fecha y hora', 'Tus datos'];
+const cta = whatsappLink('Hola Moriah Studio, vi su demo y me interesa un sistema de citas para mi negocio.');
+---
+
+<Layout title="Barbería Navaja · Agenda tu cita (demo)" description="Sistema de citas en línea de demostración hecho por Moriah Studio." noindex themeColor="#141210">
+	<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap" />
+
+	<DemoBanner title="Sistema de citas de demostración" product="un sistema de citas en línea" />
+
+	<main class="booking">
+		<!-- Portada -->
+		<header class="cover">
+			<Image src={portada} alt="" widths={[640, 1200]} sizes="(min-width: 768px) 56rem, 100vw" loading="eager" class="cover-img" />
+			<div class="cover-content">
+				<span class="logo"><Scissors size={22} /></span>
+				<h1 class="brand">Barbería Navaja</h1>
+				<p class="muted">Cortes clásicos y modernos desde 2015</p>
+				<div class="meta">
+					<span><MapPin size={14} /> Centro, Villahermosa</span>
+					<span><Clock size={14} /> Lun a sáb · 10:00 a 20:00</span>
+				</div>
+			</div>
+		</header>
+
+		<section class="card" aria-labelledby="titulo-agenda">
+			<h2 id="titulo-agenda" class="card-title">Agenda tu cita</h2>
+
+			<!-- Progreso -->
+			<ol class="progress" data-progress>
+				{steps.map((step, i) => (
+					<li data-progress-step={i}>
+						<span class="num">{i + 1}</span>
+						<span class="label">{step}</span>
+					</li>
+				))}
+			</ol>
+
+			<form data-booking novalidate>
+				<!-- Paso 1: servicio -->
+				<fieldset class="step" data-step="0">
+					<legend class="step-title">¿Qué te hacemos hoy?</legend>
+					<div class="options">
+						{services.map((s, i) => (
+							<label class="option">
+								<input type="radio" name="service" value={s.id} data-name={s.name} data-minutes={s.minutes} data-price={s.price} checked={i === 0} />
+								<span class="option-main">
+									<span class="option-name">{s.name}</span>
+									<span class="option-sub"><Clock size={13} /> {s.minutes} min</span>
+								</span>
+								<span class="option-price">${s.price}</span>
+							</label>
+						))}
+					</div>
+				</fieldset>
+
+				<!-- Paso 2: barbero -->
+				<fieldset class="step" data-step="1" hidden>
+					<legend class="step-title">¿Con quién?</legend>
+					<div class="options">
+						{barbers.map((b, i) => (
+							<label class="option">
+								<input type="radio" name="barber" value={b.id} data-name={b.name} checked={i === 0} />
+								<span class="avatar">{b.id === 'cualquiera' ? <Scissors size={16} /> : b.name.charAt(0)}</span>
+								<span class="option-main">
+									<span class="option-name">{b.name}</span>
+									<span class="option-sub">{b.specialty}</span>
+								</span>
+							</label>
+						))}
+					</div>
+				</fieldset>
+
+				<!-- Paso 3: fecha y hora (se generan con JS a partir de hoy) -->
+				<fieldset class="step" data-step="2" hidden>
+					<legend class="step-title">Elige día y hora</legend>
+					<div class="days" data-days role="radiogroup" aria-label="Día"></div>
+					<p class="slots-label" data-slots-label></p>
+					<div class="slots" data-slots role="radiogroup" aria-label="Hora"></div>
+					<p class="legend-note"><span class="busy-dot"></span> Horarios ocupados</p>
+					<noscript><p class="muted">Activa JavaScript para ver los horarios disponibles.</p></noscript>
+				</fieldset>
+
+				<!-- Paso 4: datos -->
+				<fieldset class="step" data-step="3" hidden>
+					<legend class="step-title">Tus datos</legend>
+					<div class="fields">
+						<label class="field">
+							<span>Nombre</span>
+							<input name="name" autocomplete="name" placeholder="Ej. Jorge Pérez" />
+						</label>
+						<label class="field">
+							<span>WhatsApp</span>
+							<input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="10 dígitos" />
+						</label>
+						<label class="check">
+							<input type="checkbox" name="reminder" checked />
+							<span>Envíame un recordatorio por WhatsApp un día antes</span>
+						</label>
+					</div>
+					<div class="summary" data-summary></div>
+				</fieldset>
+
+				<p class="error" data-error role="alert" hidden></p>
+
+				<div class="actions">
+					<button type="button" class="back" data-back hidden>Atrás</button>
+					<button type="submit" class="next" data-next>Continuar</button>
+				</div>
+			</form>
+
+			<!-- Confirmación -->
+			<div class="done" data-done hidden>
+				<span class="done-icon"><CircleCheck size={40} /></span>
+				<h2 class="done-title">¡Cita confirmada!</h2>
+				<div class="ticket" data-ticket></div>
+				<a class="outline" data-calendar target="_blank" rel="noopener"><CalendarPlus size={16} /> Agregar a mi calendario</a>
+
+				<p class="muted small">El cliente recibe esto por WhatsApp al instante:</p>
+				<div class="bubble" data-message></div>
+
+				<div class="backstage">
+					<p class="backstage-title">Y el sistema, sin que nadie haga nada:</p>
+					<ul>
+						<li><CalendarCheck size={16} /> Pone la cita en la agenda del barbero</li>
+						<li><Lock size={16} /> Bloquea ese horario para que nadie más lo tome</li>
+						<li><Bell size={16} /> Programa el recordatorio 24 horas antes</li>
+					</ul>
+				</div>
+
+				<p class="muted small">En este demo no se envía ni se guarda nada.</p>
+				<a href={cta} target="_blank" rel="noopener" class="next wide">Quiero un sistema así</a>
+				<button type="button" class="link" data-restart>Agendar otra cita</button>
+			</div>
+		</section>
+
+		<div class="strip" aria-hidden="true">
+			<Image src={herramientas} alt="" widths={[480, 800]} sizes="(min-width: 768px) 28rem, 50vw" />
+			<Image src={navaja} alt="" widths={[480, 800]} sizes="(min-width: 768px) 28rem, 50vw" />
+		</div>
+
+		<footer class="foot">
+			<p>Sistema de citas de demostración hecho por <a href="/">Moriah Studio</a></p>
+		</footer>
+	</main>
+</Layout>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-booking]')!;
+	const stepsEls = [...form.querySelectorAll<HTMLElement>('[data-step]')];
+	const progress = [...document.querySelectorAll<HTMLElement>('[data-progress-step]')];
+	const back = form.querySelector<HTMLButtonElement>('[data-back]')!;
+	const next = form.querySelector<HTMLButtonElement>('[data-next]')!;
+	const error = form.querySelector<HTMLElement>('[data-error]')!;
+	const daysBox = form.querySelector<HTMLElement>('[data-days]')!;
+	const slotsBox = form.querySelector<HTMLElement>('[data-slots]')!;
+	const slotsLabel = form.querySelector<HTMLElement>('[data-slots-label]')!;
+	const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+	const done = document.querySelector<HTMLElement>('[data-done]')!;
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	let current = 0;
+	let day: Date | null = null;
+	let time: string | null = null;
+
+	const dayFmt = new Intl.DateTimeFormat('es-MX', { weekday: 'short' });
+	const longFmt = new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+	const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+	const selected = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)!;
+	const service = () => {
+		const el = selected('service');
+		return { name: el.dataset.name!, minutes: Number(el.dataset.minutes), price: Number(el.dataset.price) };
+	};
+	const barber = () => {
+		const el = selected('barber');
+		return { id: el.value, name: el.dataset.name! };
+	};
+
+	// Horarios ocupados "simulados": siempre los mismos para un día y barbero, para que se vea realista.
+	const isBusy = (d: Date, slot: string, barberId: string) => {
+		const seed = `${d.toDateString()}-${slot}-${barberId}`;
+		let hash = 0;
+		for (const ch of seed) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+		return hash % (barberId === 'cualquiera' ? 7 : 3) === 0;
+	};
+
+	const renderDays = () => {
+		const today = startOfDay(new Date());
+		daysBox.replaceChildren(
+			...Array.from({ length: 12 }, (_, i) => {
+				const d = new Date(today);
+				d.setDate(today.getDate() + i);
+				const closed = d.getDay() === 0; // domingo
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'day';
+				button.disabled = closed;
+				button.setAttribute('role', 'radio');
+				button.setAttribute('aria-checked', 'false');
+				button.innerHTML = `<span>${i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : dayFmt.format(d).replace('.', '')}</span><strong>${d.getDate()}</strong><span>${closed ? 'Cerrado' : d.toLocaleDateString('es-MX', { month: 'short' }).replace('.', '')}</span>`;
+				button.addEventListener('click', () => {
+					day = d;
+					time = null;
+					daysBox.querySelectorAll('.day').forEach((b) => b.setAttribute('aria-checked', String(b === button)));
+					renderSlots();
+				});
+				return button;
+			}),
+		);
+		// Selecciona el primer día que tenga algún horario libre
+		for (const button of daysBox.querySelectorAll<HTMLButtonElement>('.day:not(:disabled)')) {
+			button.click();
+			if (slotsBox.querySelector('.slot:not(:disabled)')) break;
+		}
+	};
+
+	const renderSlots = () => {
+		if (!day) return;
+		const now = new Date();
+		const slots: string[] = [];
+		for (let m = 10 * 60; m <= 19 * 60 + 30; m += 30) slots.push(`${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`);
+		slotsLabel.textContent = `Horarios para el ${longFmt.format(day)}`;
+		slotsBox.replaceChildren(
+			...slots.map((slot) => {
+				const [h, m] = slot.split(':').map(Number);
+				const at = new Date(day!.getFullYear(), day!.getMonth(), day!.getDate(), h, m);
+				const past = at.getTime() < now.getTime() + 30 * 60_000;
+				const busy = isBusy(day!, slot, barber().id);
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = `slot${busy ? ' is-busy' : ''}`;
+				button.textContent = slot;
+				button.disabled = past || busy;
+				button.setAttribute('role', 'radio');
+				button.setAttribute('aria-checked', String(slot === time));
+				button.addEventListener('click', () => {
+					time = slot;
+					slotsBox.querySelectorAll('.slot').forEach((b) => b.setAttribute('aria-checked', String(b === button)));
+					error.hidden = true;
+				});
+				return button;
+			}),
+		);
+	};
+
+	const appointment = () => {
+		const [h, m] = time!.split(':').map(Number);
+		const start = new Date(day!.getFullYear(), day!.getMonth(), day!.getDate(), h, m);
+		const b = barber();
+		return { start, service: service(), barberName: b.id === 'cualquiera' ? 'el primer barbero disponible' : b.name };
+	};
+
+	const timeText = (d: Date) => d.toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit' });
+
+	const renderSummary = () => {
+		const a = appointment();
+		summary.innerHTML = `<p><strong>${a.service.name}</strong> · $${a.service.price}</p><p>${longFmt.format(a.start)} a las ${timeText(a.start)} con ${a.barberName}</p>`;
+	};
+
+	const show = (index: number, scroll = true) => {
+		current = index;
+		stepsEls.forEach((el, i) => (el.hidden = i !== index));
+		progress.forEach((el, i) => {
+			el.classList.toggle('is-current', i === index);
+			el.classList.toggle('is-done', i < index);
+		});
+		back.hidden = index === 0;
+		next.textContent = index === stepsEls.length - 1 ? 'Confirmar cita' : 'Continuar';
+		error.hidden = true;
+		if (index === 2) renderDays();
+		if (index === 3) renderSummary();
+		if (scroll) form.closest('.card')!.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+	};
+
+	const fail = (message: string) => {
+		error.textContent = message;
+		error.hidden = false;
+	};
+
+	form.addEventListener('submit', (event) => {
+		event.preventDefault();
+		if (current === 2 && !time) return fail('Elige un horario disponible.');
+		if (current < stepsEls.length - 1) return show(current + 1);
+
+		const name = String(new FormData(form).get('name') ?? '').trim();
+		const phone = String(new FormData(form).get('phone') ?? '').replace(/\D/g, '');
+		if (!name) return fail('Escribe tu nombre.');
+		if (phone.length !== 10) return fail('Escribe tu WhatsApp a 10 dígitos.');
+		confirmBooking(name);
+	});
+
+	back.addEventListener('click', () => show(current - 1));
+
+	const confirmBooking = (name: string) => {
+		const a = appointment();
+		const end = new Date(a.start.getTime() + a.service.minutes * 60_000);
+		const when = `${longFmt.format(a.start)} a las ${timeText(a.start)}`;
+		const gcal = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+		done.querySelector('[data-ticket]')!.innerHTML = `
+			<p><span>Servicio</span><strong>${a.service.name}</strong></p>
+			<p><span>Con</span><strong>${a.barberName.charAt(0).toUpperCase() + a.barberName.slice(1)}</strong></p>
+			<p><span>Cuándo</span><strong>${when.charAt(0).toUpperCase() + when.slice(1)}</strong></p>
+			<p><span>Duración</span><strong>${a.service.minutes} min</strong></p>
+			<p><span>Total</span><strong>$${a.service.price} MXN</strong></p>`;
+		done.querySelector('[data-message]')!.textContent =
+			`¡Hola ${name}! ✂️ Tu cita en Barbería Navaja quedó confirmada:\n${a.service.name} con ${a.barberName}, ${when}${when.endsWith('.') ? '' : '.'}\nTe enviaremos un recordatorio un día antes. Si necesitas cambiarla, responde a este mensaje.`;
+		done.querySelector<HTMLAnchorElement>('[data-calendar]')!.href =
+			'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+			`&text=${encodeURIComponent(`${a.service.name} · Barbería Navaja`)}` +
+			`&dates=${gcal(a.start)}/${gcal(end)}` +
+			`&location=${encodeURIComponent('Centro, Villahermosa, Tabasco')}`;
+
+		form.hidden = true;
+		document.querySelector<HTMLElement>('[data-progress]')!.hidden = true;
+		done.hidden = false;
+		done.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+	};
+
+	document.querySelector('[data-restart]')!.addEventListener('click', () => {
+		form.reset();
+		day = null;
+		time = null;
+		form.hidden = false;
+		document.querySelector<HTMLElement>('[data-progress]')!.hidden = false;
+		done.hidden = true;
+		show(0);
+	});
+
+	// Al cambiar de barbero, los horarios ocupados cambian
+	form.querySelectorAll('input[name="barber"]').forEach((input) => input.addEventListener('change', () => (time = null)));
+
+	show(0, false);
+</script>
+
+<style>
+	:global(body) {
+		background: #141210;
+	}
+
+	.booking {
+		--c-bg: #141210;
+		--c-surface: #1e1b18;
+		--c-raised: #27231f;
+		--c-line: rgb(200 161 90 / 0.18);
+		--c-text: #f3ede4;
+		--c-muted: #a89f94;
+		--c-accent: #c8a15a;
+		--c-accent-contrast: #141210;
+		max-width: 56rem;
+		min-height: 100svh;
+		margin: 0 auto;
+		padding: 3rem 0 4rem;
+		color: var(--c-text);
+		font-family: Inter, sans-serif;
+	}
+
+	.muted {
+		color: var(--c-muted);
+	}
+
+	.small {
+		font-size: 0.85rem;
+		text-align: center;
+	}
+
+	/* === Portada === */
+	.cover {
+		position: relative;
+		height: 18rem;
+		overflow: hidden;
+		isolation: isolate;
+	}
+
+	.cover :global(.cover-img) {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.cover::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(180deg, rgb(20 18 16 / 0.3), rgb(20 18 16 / 0.95));
+	}
+
+	.cover-content {
+		position: absolute;
+		inset: auto 1.25rem 1.5rem;
+	}
+
+	.logo {
+		display: inline-flex;
+		width: 2.75rem;
+		height: 2.75rem;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 0.75rem;
+		border: 1px solid var(--c-accent);
+		border-radius: 9999px;
+		color: var(--c-accent);
+	}
+
+	.brand {
+		font-family: 'Anton', sans-serif;
+		font-size: clamp(2.5rem, 10vw, 3.75rem);
+		font-weight: 400;
+		line-height: 1;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		margin-top: 0.75rem;
+		font-size: 0.85rem;
+		color: var(--c-muted);
+	}
+
+	.meta span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	/* === Tarjeta de reserva === */
+	.card {
+		margin: -0.5rem 1rem 0;
+		padding: 1.5rem 1.25rem;
+		position: relative;
+		border: 1px solid var(--c-line);
+		border-radius: 1.5rem;
+		background: var(--c-surface);
+		scroll-margin-top: 4rem;
+	}
+
+	.card-title {
+		font-family: 'Anton', sans-serif;
+		font-size: 1.75rem;
+		font-weight: 400;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+	}
+
+	.progress {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.4rem;
+		margin: 1rem 0 1.5rem;
+	}
+
+	.progress li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		font-size: 0.7rem;
+		color: var(--c-muted);
+	}
+
+	.progress li::before {
+		content: '';
+		height: 4px;
+		border-radius: 9999px;
+		background: var(--c-raised);
+	}
+
+	.progress li.is-done::before,
+	.progress li.is-current::before {
+		background: var(--c-accent);
+	}
+
+	.progress li.is-current {
+		color: var(--c-text);
+		font-weight: 600;
+	}
+
+	.progress .num {
+		display: none;
+	}
+
+	/* Los fieldset se estiran con su contenido por defecto; sin esto, la fila de días desborda en celular */
+	.step {
+		min-width: 0;
+	}
+
+	.step-title {
+		margin-bottom: 1rem;
+		font-size: 1.15rem;
+		font-weight: 700;
+	}
+
+	.options {
+		display: grid;
+		gap: 0.6rem;
+	}
+
+	@media (min-width: 640px) {
+		.options {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.option {
+		display: flex;
+		align-items: center;
+		gap: 0.85rem;
+		padding: 0.9rem 1rem;
+		border: 1px solid var(--c-line);
+		border-radius: 1rem;
+		background: var(--c-raised);
+		cursor: pointer;
+		transition:
+			border-color 0.2s ease,
+			background-color 0.2s ease;
+	}
+
+	.option:has(input:checked) {
+		border-color: var(--c-accent);
+		background: rgb(200 161 90 / 0.1);
+	}
+
+	.option input {
+		accent-color: var(--c-accent);
+	}
+
+	.option-main {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.option-name {
+		display: block;
+		font-weight: 600;
+	}
+
+	.option-sub {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-size: 0.8rem;
+		color: var(--c-muted);
+	}
+
+	.option-price {
+		font-weight: 700;
+		color: var(--c-accent);
+	}
+
+	.avatar {
+		display: flex;
+		width: 2.5rem;
+		height: 2.5rem;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--c-accent);
+		color: var(--c-accent-contrast);
+		font-family: 'Anton', sans-serif;
+		font-size: 1.1rem;
+	}
+
+	/* === Días y horarios (creados por el script) === */
+	.days {
+		display: flex;
+		gap: 0.5rem;
+		overflow-x: auto;
+		padding-bottom: 0.5rem;
+		scrollbar-width: thin;
+	}
+
+	.days :global(.day) {
+		display: flex;
+		min-width: 4.25rem;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.1rem;
+		padding: 0.6rem 0.4rem;
+		border: 1px solid var(--c-line);
+		border-radius: 0.9rem;
+		background: var(--c-raised);
+		font-size: 0.7rem;
+		color: var(--c-muted);
+		text-transform: capitalize;
+		cursor: pointer;
+	}
+
+	.days :global(.day strong) {
+		font-size: 1.35rem;
+		color: var(--c-text);
+	}
+
+	.days :global(.day[aria-checked='true']) {
+		border-color: var(--c-accent);
+		background: var(--c-accent);
+		color: var(--c-accent-contrast);
+	}
+
+	.days :global(.day[aria-checked='true'] strong) {
+		color: var(--c-accent-contrast);
+	}
+
+	.days :global(.day:disabled) {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+
+	.slots-label {
+		margin: 1rem 0 0.6rem;
+		font-size: 0.85rem;
+		color: var(--c-muted);
+	}
+
+	.slots {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.45rem;
+	}
+
+	@media (min-width: 640px) {
+		.slots {
+			grid-template-columns: repeat(6, 1fr);
+		}
+	}
+
+	.slots :global(.slot) {
+		padding: 0.6rem 0;
+		border: 1px solid var(--c-line);
+		border-radius: 0.7rem;
+		background: var(--c-raised);
+		font-size: 0.875rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		cursor: pointer;
+	}
+
+	.slots :global(.slot[aria-checked='true']) {
+		border-color: var(--c-accent);
+		background: var(--c-accent);
+		color: var(--c-accent-contrast);
+	}
+
+	.slots :global(.slot:disabled) {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+
+	.slots :global(.slot.is-busy) {
+		text-decoration: line-through;
+	}
+
+	.legend-note {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.75rem;
+		font-size: 0.75rem;
+		color: var(--c-muted);
+	}
+
+	.busy-dot {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-radius: 0.2rem;
+		background: var(--c-raised);
+		opacity: 0.6;
+	}
+
+	/* === Datos === */
+	.fields {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.field > span {
+		display: block;
+		margin-bottom: 0.4rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--c-muted);
+	}
+
+	.field input {
+		width: 100%;
+		padding: 0.8rem 0.9rem;
+		border: 1px solid var(--c-line);
+		border-radius: 0.8rem;
+		background: var(--c-bg);
+		color: var(--c-text);
+		font: inherit;
+	}
+
+	.field input:focus-visible {
+		outline: 2px solid var(--c-accent);
+		outline-offset: 1px;
+	}
+
+	.check {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.6rem;
+		font-size: 0.875rem;
+		color: var(--c-muted);
+	}
+
+	.check input {
+		margin-top: 0.2rem;
+		accent-color: var(--c-accent);
+	}
+
+	.summary {
+		margin-top: 1.25rem;
+		padding: 1rem;
+		border-left: 3px solid var(--c-accent);
+		border-radius: 0.6rem;
+		background: var(--c-raised);
+		font-size: 0.9rem;
+		line-height: 1.5;
+	}
+
+	.summary :global(p:last-child) {
+		color: var(--c-muted);
+	}
+
+	.error {
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		color: #f87171;
+	}
+
+	.actions {
+		display: flex;
+		gap: 0.75rem;
+		margin-top: 1.5rem;
+	}
+
+	.back {
+		padding: 0.85rem 1.25rem;
+		border: 1px solid var(--c-line);
+		border-radius: 9999px;
+		color: var(--c-text);
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	.next {
+		display: inline-flex;
+		flex: 1;
+		justify-content: center;
+		padding: 0.85rem 1.25rem;
+		border-radius: 9999px;
+		background: var(--c-accent);
+		color: var(--c-accent-contrast);
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.wide {
+		width: 100%;
+	}
+
+	/* === Confirmación === */
+	.done {
+		display: grid;
+		gap: 1rem;
+		justify-items: center;
+		text-align: center;
+	}
+
+	.done-icon {
+		color: var(--c-accent);
+		animation: pop 0.5s ease-out;
+	}
+
+	.done-title {
+		font-family: 'Anton', sans-serif;
+		font-size: 2rem;
+		font-weight: 400;
+		text-transform: uppercase;
+	}
+
+	.ticket {
+		width: 100%;
+		padding: 0.5rem 1.1rem;
+		border: 1px dashed var(--c-line);
+		border-radius: 1rem;
+		background: var(--c-raised);
+		text-align: left;
+	}
+
+	.ticket :global(p) {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.6rem 0;
+		border-bottom: 1px solid var(--c-line);
+		font-size: 0.9rem;
+	}
+
+	.ticket :global(p:last-child) {
+		border-bottom: 0;
+	}
+
+	.ticket :global(span) {
+		color: var(--c-muted);
+	}
+
+	.ticket :global(strong) {
+		text-align: right;
+	}
+
+	.outline {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.6rem 1.2rem;
+		border: 1px solid var(--c-accent);
+		border-radius: 9999px;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--c-accent);
+	}
+
+	.bubble {
+		justify-self: stretch;
+		margin-left: 10%;
+		padding: 0.8rem 0.95rem;
+		border-radius: 0.9rem 0.25rem 0.9rem 0.9rem;
+		background: #d9fdd3;
+		color: #111b21;
+		font-size: 0.9rem;
+		line-height: 1.45;
+		text-align: left;
+		white-space: pre-line;
+	}
+
+	.backstage {
+		width: 100%;
+		padding: 1rem 1.1rem;
+		border-radius: 1rem;
+		background: var(--c-raised);
+		text-align: left;
+	}
+
+	.backstage-title {
+		margin-bottom: 0.6rem;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.backstage ul {
+		display: grid;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: var(--c-muted);
+	}
+
+	.backstage li {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.backstage li :global(svg) {
+		flex-shrink: 0;
+		color: var(--c-accent);
+	}
+
+	.link {
+		color: var(--c-muted);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		cursor: pointer;
+	}
+
+	.strip {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.6rem;
+		margin: 2rem 1rem 0;
+	}
+
+	.strip :global(img) {
+		width: 100%;
+		height: 9rem;
+		border-radius: 1rem;
+		object-fit: cover;
+		opacity: 0.85;
+	}
+
+	.foot {
+		padding: 2rem 1rem 0;
+		font-size: 0.8rem;
+		text-align: center;
+		color: var(--c-muted);
+	}
+
+	.foot a {
+		color: var(--c-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	@keyframes pop {
+		from {
+			opacity: 0;
+			transform: scale(0.6);
+		}
+	}
+
+	@media (min-width: 768px) {
+		.cover {
+			height: 22rem;
+			margin-top: 1rem;
+			border-radius: 1.5rem;
+		}
+
+		.cover-content {
+			bottom: 4.5rem;
+			left: 2rem;
+		}
+
+		.card {
+			margin: -3rem 2rem 0;
+			padding: 2rem;
+		}
+
+		.progress .num {
+			display: inline;
+		}
+
+		.progress li {
+			font-size: 0.8rem;
+		}
+
+		.strip {
+			margin-inline: 2rem;
+		}
+
+		.strip :global(img) {
+			height: 12rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.done-icon {
+			animation: none;
+		}
+	}
+</style>

@@ -1,0 +1,471 @@
+---
+// Tarjeta de presentación digital de demostración (persona ficticia). Fuera de buscadores y del sitemap.
+// Sin foto de rostro (iniciales). Correo y web usan el dominio reservado .example para no apuntar a nadie real.
+// El QR se genera al compilar con la librería `qrcode`.
+import { Image } from 'astro:assets';
+import QRCode from 'qrcode';
+import Download from 'lucide-astro/Download';
+import Facebook from 'lucide-astro/Facebook';
+import Globe from 'lucide-astro/Globe';
+import Instagram from 'lucide-astro/Instagram';
+import Linkedin from 'lucide-astro/Linkedin';
+import Mail from 'lucide-astro/Mail';
+import MapPin from 'lucide-astro/MapPin';
+import MessageCircle from 'lucide-astro/MessageCircle';
+import Phone from 'lucide-astro/Phone';
+import Share2 from 'lucide-astro/Share2';
+import Layout from '../../layouts/Layout.astro';
+import DemoBanner from '../../components/demo/DemoBanner.astro';
+import cocina from '../../assets/demos/tarjeta/cocina.jpg';
+import comedor from '../../assets/demos/tarjeta/comedor.jpg';
+import portada from '../../assets/demos/tarjeta/portada.jpg';
+import sala from '../../assets/demos/tarjeta/sala.jpg';
+
+const person = {
+	first: 'Mariana',
+	last: 'Torres',
+	title: 'Arquitecta e interiorista',
+	company: 'Estudio Torres',
+	city: 'Villahermosa, Tabasco',
+	phone: '+52 993 000 0000',
+	email: 'hola@estudiotorres.example',
+	web: 'estudiotorres.example',
+};
+
+const pageUrl = new URL('/demos/tarjeta', Astro.site ?? 'https://moriah-studio.netlify.app').href;
+const qrSvg = await QRCode.toString(pageUrl, { type: 'svg', margin: 1, color: { dark: '#2f4f46', light: '#ffffff' } });
+
+const actions = [
+	{ icon: Phone, label: 'Llamar', hint: 'llama directo a tu número' },
+	{ icon: MessageCircle, label: 'WhatsApp', hint: 'abre un chat de WhatsApp contigo' },
+	{ icon: Mail, label: 'Correo', hint: 'abre un correo dirigido a ti' },
+	{ icon: MapPin, label: 'Ubicación', hint: 'abre tu dirección en Google Maps' },
+];
+
+const services = ['Diseño de interiores', 'Remodelación', 'Proyecto arquitectónico', 'Asesoría de color'];
+const portfolio = [
+	{ src: sala, alt: 'Sala con sofá verde menta y cojines' },
+	{ src: cocina, alt: 'Cocina con barra de madera y bancos' },
+	{ src: comedor, alt: 'Comedor con mesa redonda y lámparas' },
+];
+const socials = [
+	{ icon: Instagram, label: 'Instagram' },
+	{ icon: Facebook, label: 'Facebook' },
+	{ icon: Linkedin, label: 'LinkedIn' },
+	{ icon: Globe, label: 'Sitio web' },
+];
+---
+
+<Layout title="Mariana Torres · Tarjeta digital (demo)" description="Tarjeta de presentación digital de demostración hecha por Moriah Studio." noindex themeColor="#EFEBE4">
+	<link slot="head" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" />
+
+	<DemoBanner title="Tarjeta digital de demostración" product="una tarjeta de presentación digital" />
+
+	<main class="page">
+		<article class="vcard" data-person={JSON.stringify(person)} data-url={pageUrl}>
+			<div class="cover">
+				<Image src={portada} alt="" widths={[480, 960]} sizes="26rem" loading="eager" class="cover-img" />
+			</div>
+
+			<div class="identity">
+				<span class="avatar" aria-hidden="true">{person.first[0]}{person.last[0]}</span>
+				<h1 class="name">{person.first} {person.last}</h1>
+				<p class="role">{person.title}</p>
+				<p class="company">{person.company} · {person.city}</p>
+			</div>
+
+			<div class="actions">
+				{actions.map((action) => {
+					const Icon = action.icon;
+					return (
+						<button type="button" class="action" data-hint={action.hint}>
+							<span class="action-icon"><Icon size={20} /></span>
+							{action.label}
+						</button>
+					);
+				})}
+			</div>
+
+			<div class="main-buttons">
+				<button type="button" class="primary" data-save><Download size={18} /> Guardar contacto</button>
+				<button type="button" class="secondary" data-share aria-label="Compartir tarjeta"><Share2 size={18} /></button>
+			</div>
+
+			<section class="block">
+				<h2 class="block-title">Sobre mí</h2>
+				<p class="text">
+					Diseño espacios que se sienten como hogar. Más de 8 años ayudando a familias y negocios de Tabasco a remodelar casas, oficinas y locales con un estilo cálido y funcional.
+				</p>
+			</section>
+
+			<section class="block">
+				<h2 class="block-title">Servicios</h2>
+				<ul class="chips">{services.map((s) => <li>{s}</li>)}</ul>
+			</section>
+
+			<section class="block">
+				<h2 class="block-title">Proyectos recientes</h2>
+				<div class="gallery">
+					{portfolio.map((photo) => <Image src={photo.src} alt={photo.alt} widths={[240, 480]} sizes="8rem" />)}
+				</div>
+			</section>
+
+			<section class="block">
+				<h2 class="block-title">Sígueme</h2>
+				<div class="socials">
+					{socials.map((social) => {
+						const Icon = social.icon;
+						return (
+							<button type="button" class="social" aria-label={social.label} data-hint={`abre tu perfil de ${social.label}`}>
+								<Icon size={20} />
+							</button>
+						);
+					})}
+				</div>
+			</section>
+
+			<section class="block qr-block">
+				<div class="qr" set:html={qrSvg} role="img" aria-label="Código QR de esta tarjeta" />
+				<div>
+					<h2 class="block-title">Escanéame</h2>
+					<p class="text small">Imprime este código en tu mostrador, tus volantes o tu tarjeta física y cualquiera abre tu tarjeta con la cámara del celular.</p>
+				</div>
+			</section>
+		</article>
+
+		<p class="credit">Tarjeta digital de demostración hecha por <a href="/">Moriah Studio</a></p>
+
+		<div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+	</main>
+</Layout>
+
+<script>
+	const card = document.querySelector<HTMLElement>('[data-person]')!;
+	const person = JSON.parse(card.dataset.person!);
+	const url = card.dataset.url!;
+	const toast = document.querySelector<HTMLElement>('[data-toast]')!;
+	let toastTimer = 0;
+
+	const notify = (text: string) => {
+		toast.textContent = text;
+		toast.hidden = false;
+		clearTimeout(toastTimer);
+		toastTimer = window.setTimeout(() => (toast.hidden = true), 3500);
+	};
+
+	// Botones de contacto: en el demo explican qué harían (los datos son ficticios)
+	document.querySelectorAll<HTMLButtonElement>('[data-hint]').forEach((button) =>
+		button.addEventListener('click', () => notify(`Demo: en tu tarjeta, este botón ${button.dataset.hint}.`)),
+	);
+
+	// Descarga un contacto real (.vcf) con los datos de la tarjeta
+	document.querySelector('[data-save]')!.addEventListener('click', () => {
+		const vcard = [
+			'BEGIN:VCARD',
+			'VERSION:3.0',
+			`N:${person.last};${person.first};;;`,
+			`FN:${person.first} ${person.last}`,
+			`ORG:${person.company}`,
+			`TITLE:${person.title}`,
+			`TEL;TYPE=CELL:${person.phone.replace(/\s/g, '')}`,
+			`EMAIL:${person.email}`,
+			`URL:${url}`,
+			`ADR;TYPE=WORK:;;;Villahermosa;Tabasco;;México`,
+			'NOTE:Contacto de demostración creado por Moriah Studio',
+			'END:VCARD',
+		].join('\r\n');
+		const link = document.createElement('a');
+		link.href = URL.createObjectURL(new Blob([vcard], { type: 'text/vcard' }));
+		link.download = `${person.first}-${person.last}.vcf`.toLowerCase();
+		link.click();
+		URL.revokeObjectURL(link.href);
+		notify('Contacto descargado. Ábrelo para guardarlo en tu celular.');
+	});
+
+	// Compartir: menú nativo del celular o copiar enlace
+	document.querySelector('[data-share]')!.addEventListener('click', async () => {
+		const data = { title: `${person.first} ${person.last}`, text: person.title, url };
+		if (navigator.share) {
+			try {
+				await navigator.share(data);
+			} catch {
+				/* el usuario canceló */
+			}
+		} else {
+			await navigator.clipboard?.writeText(url);
+			notify('Enlace copiado. Pégalo donde quieras compartirlo.');
+		}
+	});
+</script>
+
+<style>
+	:global(body) {
+		background: #efebe4;
+	}
+
+	.page {
+		--t-bg: #efebe4;
+		--t-surface: #ffffff;
+		--t-text: #2a2a28;
+		--t-muted: #77736b;
+		--t-accent: #2f4f46;
+		--t-soft: #e4ece8;
+		--t-line: #e7e2d9;
+		min-height: 100svh;
+		padding: 4.5rem 1rem 3rem;
+		color: var(--t-text);
+		font-family: Inter, sans-serif;
+	}
+
+	.vcard {
+		max-width: 26rem;
+		margin: 0 auto;
+		overflow: hidden;
+		border-radius: 1.75rem;
+		background: var(--t-surface);
+		box-shadow: 0 30px 60px -30px rgb(42 42 40 / 0.35);
+	}
+
+	.cover {
+		height: 9.5rem;
+		overflow: hidden;
+	}
+
+	.cover :global(.cover-img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.identity {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: -3rem;
+		padding: 0 1.5rem;
+		text-align: center;
+	}
+
+	.avatar {
+		display: flex;
+		width: 6rem;
+		height: 6rem;
+		align-items: center;
+		justify-content: center;
+		border: 5px solid var(--t-surface);
+		border-radius: 9999px;
+		background: var(--t-accent);
+		color: white;
+		font-family: 'Fraunces', serif;
+		font-size: 2rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+	}
+
+	.name {
+		margin-top: 0.75rem;
+		font-family: 'Fraunces', serif;
+		font-size: 1.85rem;
+		font-weight: 600;
+		line-height: 1.1;
+	}
+
+	.role {
+		margin-top: 0.3rem;
+		font-weight: 600;
+		color: var(--t-accent);
+	}
+
+	.company {
+		margin-top: 0.15rem;
+		font-size: 0.875rem;
+		color: var(--t-muted);
+	}
+
+	.actions {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
+		margin: 1.5rem 1.25rem 0;
+	}
+
+	.action {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--t-muted);
+		cursor: pointer;
+	}
+
+	.action-icon {
+		display: flex;
+		width: 3.1rem;
+		height: 3.1rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 1rem;
+		background: var(--t-soft);
+		color: var(--t-accent);
+		transition: transform 0.15s ease;
+	}
+
+	.action:hover .action-icon {
+		transform: translateY(-2px);
+	}
+
+	.main-buttons {
+		display: flex;
+		gap: 0.6rem;
+		margin: 1.25rem 1.25rem 0;
+	}
+
+	.primary {
+		display: inline-flex;
+		flex: 1;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.9rem 1rem;
+		border-radius: 9999px;
+		background: var(--t-accent);
+		color: white;
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.secondary {
+		display: inline-flex;
+		width: 3.2rem;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--t-line);
+		border-radius: 9999px;
+		color: var(--t-accent);
+		cursor: pointer;
+	}
+
+	.block {
+		margin: 1.5rem 1.25rem 0;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--t-line);
+	}
+
+	.block:last-child {
+		padding-bottom: 1.5rem;
+	}
+
+	.block-title {
+		margin-bottom: 0.6rem;
+		font-family: 'Fraunces', serif;
+		font-size: 1.15rem;
+		font-weight: 600;
+	}
+
+	.text {
+		font-size: 0.925rem;
+		line-height: 1.55;
+		color: var(--t-muted);
+	}
+
+	.small {
+		font-size: 0.825rem;
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+
+	.chips li {
+		padding: 0.35rem 0.75rem;
+		border-radius: 9999px;
+		background: var(--t-soft);
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--t-accent);
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.4rem;
+	}
+
+	.gallery :global(img) {
+		width: 100%;
+		aspect-ratio: 1;
+		border-radius: 0.75rem;
+		object-fit: cover;
+	}
+
+	.socials {
+		display: flex;
+		gap: 0.6rem;
+	}
+
+	.social {
+		display: flex;
+		width: 2.75rem;
+		height: 2.75rem;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--t-line);
+		border-radius: 9999px;
+		color: var(--t-accent);
+		cursor: pointer;
+	}
+
+	.qr-block {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.qr {
+		width: 7rem;
+		flex-shrink: 0;
+		padding: 0.4rem;
+		border: 1px solid var(--t-line);
+		border-radius: 0.9rem;
+	}
+
+	.qr :global(svg) {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.credit {
+		margin-top: 1.5rem;
+		font-size: 0.8rem;
+		text-align: center;
+		color: var(--t-muted);
+	}
+
+	.credit a {
+		color: var(--t-accent);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.toast {
+		position: fixed;
+		bottom: 1.25rem;
+		left: 50%;
+		z-index: 60;
+		width: min(calc(100% - 2rem), 24rem);
+		padding: 0.85rem 1.1rem;
+		border-radius: 1rem;
+		background: #2a2a28;
+		color: white;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		text-align: center;
+		box-shadow: 0 16px 40px -12px rgb(0 0 0 / 0.5);
+		transform: translateX(-50%);
+	}
+</style>

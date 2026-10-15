@@ -7,7 +7,9 @@ import cobius from '../assets/projects/cobius.png';
 import demoBoda from '../assets/projects/demo-boda.png';
 import demoCatalogo from '../assets/projects/demo-catalogo.png';
 import demoChat from '../assets/projects/demo-chat.png';
+import demoCitas from '../assets/projects/demo-citas.png';
 import demoMenu from '../assets/projects/demo-menu.png';
+import demoTarjeta from '../assets/projects/demo-tarjeta.png';
 import demoXv from '../assets/projects/demo-xv.png';
 import invitacion from '../assets/projects/invitacion.png';
 import iseisa from '../assets/projects/iseisa.png';
@@ -169,6 +171,26 @@ export const projects: Project[] = [
     url: '/demos/catalogo',
     linkLabel: 'Probar catálogo',
     image: demoCatalogo,
+  },
+  {
+    client: 'Barbería Navaja',
+    type: 'Demo',
+    demoGroup: 'Para negocios',
+    category: 'Sistema de citas',
+    description: 'El cliente elige servicio, barbero, día y hora libre; recibe su confirmación por WhatsApp y la agrega a su calendario.',
+    url: '/demos/citas',
+    linkLabel: 'Agendar cita',
+    image: demoCitas,
+  },
+  {
+    client: 'Mariana Torres',
+    type: 'Demo',
+    demoGroup: 'Para negocios',
+    category: 'Tarjeta de presentación digital',
+    description: 'Tarjeta con botones de contacto, servicios, portafolio, código QR y un botón que guarda el contacto en el celular.',
+    url: '/demos/tarjeta',
+    linkLabel: 'Ver tarjeta',
+    image: demoTarjeta,
   },
   {
     client: 'Asistente de WhatsApp',

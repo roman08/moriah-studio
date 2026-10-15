@@ -60,11 +60,24 @@ const ogImage = Astro.site ? new URL('/og-image.jpg', Astro.site).href : undefin
 		/>
 		<!-- Recursos extra por página (p. ej. fuentes de las invitaciones demo) -->
 		<slot name="head" />
+		{import.meta.env.PROD && <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={site.umamiId}></script>}
 	</head>
 	<body class="overflow-x-hidden">
 		<slot />
 
 		<script>
+			import { track } from '../scripts/track';
+
+			// Analítica: registra cada clic a WhatsApp o correo con su origen. El origen sale de data-origen
+			// o del id de la sección más cercana; en páginas que no son la portada se agrega la ruta.
+			document.addEventListener('click', (event) => {
+				const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="https://wa.me/"], a[href^="mailto:"]');
+				if (!link) return;
+				const place = link.closest<HTMLElement>('[data-origen]')?.dataset.origen ?? link.closest('[id]')?.id ?? 'página';
+				const origen = location.pathname === '/' ? place : `${place} · ${location.pathname}`;
+				track(link.href.startsWith('mailto:') ? 'Correo' : 'WhatsApp', { origen });
+			});
+
 			// Revela los elementos con [data-reveal] al entrar en pantalla.
 			const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
 			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

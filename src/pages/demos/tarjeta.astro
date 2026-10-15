@@ -140,6 +140,8 @@ const socials = [
 </Layout>
 
 <script>
+	import { track } from '../../scripts/track';
+
 	const card = document.querySelector<HTMLElement>('[data-person]')!;
 	const person = JSON.parse(card.dataset.person!);
 	const url = card.dataset.url!;
@@ -180,6 +182,7 @@ const socials = [
 		link.click();
 		URL.revokeObjectURL(link.href);
 		notify('Contacto descargado. Ábrelo para guardarlo en tu celular.');
+		track('Demo: contacto guardado');
 	});
 
 	// Compartir: menú nativo del celular o copiar enlace

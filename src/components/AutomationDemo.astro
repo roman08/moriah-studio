@@ -84,6 +84,8 @@ const backstage = [
 </section>
 
 <script>
+	import { track } from '../scripts/track';
+
 	type Option = { label: string; next: () => void };
 
 	const section = document.querySelector<HTMLElement>('#demo');
@@ -192,6 +194,7 @@ const backstage = [
 				'Te enviaré un recordatorio un día antes. ¡Te esperamos!',
 			]);
 			backstage.classList.add('is-done');
+			track('Demo: chat cita agendada', { tratamiento: treatment });
 			showOptions([{ label: 'Empezar de nuevo', next: restart }]);
 		};
 

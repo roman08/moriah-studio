@@ -26,6 +26,8 @@ export const site = {
   whatsapp: '529141186427',
   whatsappMessage: 'Hola Moriah Studio, me interesa cotizar un proyecto.',
   email: 'roman.madrigal.dev@gmail.com',
+  // Analítica Umami (sin cookies). Solo se carga en producción.
+  umamiId: '3b3c77eb-cde8-4d3a-96eb-43a30b1810b8',
   social: {
     facebook: 'https://www.facebook.com/share/1DXZSEi5Nx/',
     linkedin: 'https://www.linkedin.com/in/roman-madrigal',
@@ -344,7 +346,7 @@ export const legal = {
   // Domicilio para oír y recibir notificaciones. Mientras esté vacío se muestra solo la ciudad.
   address: 'Cunduacán, Tabasco, México',
   city: 'Tabasco, México',
-  updated: '14 de octubre de 2026',
+  updated: '15 de octubre de 2026',
 };
 
 export const steps = [

@@ -4,6 +4,8 @@
 //   [data-product data-id data-name data-price]  con  [data-add]  y  [data-stepper] > [data-dec] [data-count] [data-inc]
 // y el componente OrderCart ([data-order]).
 
+import { track } from './track';
+
 const root = document.querySelector<HTMLElement>('[data-order]');
 
 if (root) {
@@ -117,6 +119,7 @@ if (root) {
 
 		stepCart.hidden = true;
 		stepSent.hidden = false;
+		track('Demo: pedido', { demo: business, total });
 	});
 
 	root.querySelector('[data-order-reset]')!.addEventListener('click', () => {

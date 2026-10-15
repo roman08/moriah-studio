@@ -162,7 +162,7 @@ const cta = whatsappLink('Hola Moriah Studio, vi su demo y me interesa un sistem
 				</div>
 
 				<p class="muted small">En este demo no se envía ni se guarda nada.</p>
-				<a href={cta} target="_blank" rel="noopener" class="next wide">Quiero un sistema así</a>
+				<a href={cta} target="_blank" rel="noopener" class="next wide" data-origen="final de la cita">Quiero un sistema así</a>
 				<button type="button" class="link" data-restart>Agendar otra cita</button>
 			</div>
 		</section>
@@ -179,6 +179,8 @@ const cta = whatsappLink('Hola Moriah Studio, vi su demo y me interesa un sistem
 </Layout>
 
 <script>
+	import { track } from '../../scripts/track';
+
 	const form = document.querySelector<HTMLFormElement>('[data-booking]')!;
 	const stepsEls = [...form.querySelectorAll<HTMLElement>('[data-step]')];
 	const progress = [...document.querySelectorAll<HTMLElement>('[data-progress-step]')];
@@ -348,6 +350,7 @@ const cta = whatsappLink('Hola Moriah Studio, vi su demo y me interesa un sistem
 		form.hidden = true;
 		document.querySelector<HTMLElement>('[data-progress]')!.hidden = true;
 		done.hidden = false;
+		track('Demo: cita agendada', { servicio: a.service.name });
 		done.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
 	};
 

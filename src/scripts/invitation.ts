@@ -1,4 +1,5 @@
 // Interacciones de las invitaciones demo: cuenta regresiva, música y confirmación de asistencia.
+import { track } from './track';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -151,6 +152,7 @@ document.querySelectorAll<HTMLFormElement>('[data-rsvp]').forEach((form) => {
 			preview.textContent = message;
 			form.hidden = true;
 			result.hidden = false;
+			track('Demo: confirmación de invitación', { evento: eventName });
 			result.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
 		}
 	});
